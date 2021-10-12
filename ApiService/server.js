@@ -15,6 +15,9 @@ const metricsRouter = require("./Routes/metrics");
 const path = require("path");
 const server = express();
 
+// Current API Version
+const version = "/v1";
+
 // Cors Config
 server.use(cors({
   allowedHeaders: ['X-Total-Count', 'Content-Type', 'Content-Range', 'Authorization'],
@@ -33,28 +36,28 @@ server.use(
 server.use(bodyParser.json());
 
 // Static Files
-server.use("/public", express.static("Public/profiles"));
-server.use("/assets", express.static("Public/assets"));
-server.use("/Public/products", express.static("Public/products"));
-server.use("/Public/brands", express.static("Public/brands"));
+server.use(version+"/public", express.static("Public/profiles"));
+server.use(version+"/assets", express.static("Public/assets"));
+server.use(version+"/Public/products", express.static("Public/products"));
+server.use(version+"/Public/brands", express.static("Public/brands"));
 
 // Routers
-server.use("/users", usersRouter);
-server.use("/auth", AuthRouter);
-server.use("/profile", profileRouter);
-server.use("/products", productRouter);
-server.use("/categories", categoriesRouter);
-server.use("/brands", brandsRouter);
-server.use("/families", familiesRouter);
-server.use("/metrics", metricsRouter);
+server.use(version+"/users", usersRouter);
+server.use(version+"/auth", AuthRouter);
+server.use(version+"/profile", profileRouter);
+server.use(version+"/products", productRouter);
+server.use(version+"/categories", categoriesRouter);
+server.use(version+"/brands", brandsRouter);
+server.use(version+"/families", familiesRouter);
+server.use(version+"/metrics", metricsRouter);
 
 // Index Page
-server.get("/", function (req, res) {
+server.get(version+"/", function (req, res) {
   res.sendFile(path.join(__dirname + "/index.html"));
 });
 
 // Favicon
-server.get('/favicon.ico', (req, res) => res.sendStatus(204).end());
+server.get(version+'/favicon.ico', (req, res) => res.sendStatus(204).end());
 
 // No Token Eror 401 Handle
 server.use(function (err, req, res, next) {

@@ -7,11 +7,23 @@
 
 ## Installation ##
 
-- cp copy.config.js ApiService/config.js
-
 ### First Steps ###
 
+- cp copy.config.js ApiService/config.js
+
 - Install Dependencies with `npm install`.
+
+- Lets create a user send a `POST` request to http://localhost:3000/v1/auth/register use format `JSON` like this:
+```
+    {
+        "username": "my_username",
+        "email": "my_email",
+        "password": "my_password",
+        "isActive": true, # Either your login request will be rejected
+        "acess_type": "admin" # So we get all privilages at once let set it to admin
+    }
+```
+- Now we will be able to Login into the Admin Panel and update our Profile information
 
 ### Development Server ###
 
