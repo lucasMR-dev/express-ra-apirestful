@@ -3,3 +3,6 @@
 
 # config file
 ApiService/config.js
+
+# static files
+/Public
