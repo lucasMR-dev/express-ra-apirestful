@@ -7,7 +7,6 @@ const appTrack = require("../Functions/appTracking");
 const Metric = require("../Models/Metric");
 const fs = require("fs");
 const queryFilters = require("../Functions/Filters/queryFilters");
-const Category = require("../Models/Category");
 
 // Multer Middleware Config
 const storageMiddleware = multer.diskStorage({
@@ -15,7 +14,7 @@ const storageMiddleware = multer.diskStorage({
     var path = "./Public/brands";
     var dirChk = fs.existsSync(path);
     if(!dirChk){
-      await fs.mkdirSync(path);
+      await fs.mkdirSync(path, { recursive: true });
     }    
     callback(null, path);
   },

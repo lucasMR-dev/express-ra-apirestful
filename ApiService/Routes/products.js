@@ -15,7 +15,7 @@ const storageMiddleware = multer.diskStorage({
     var path = "./Public/products";
     var dirChk = fs.existsSync(path);
     if (!dirChk) {
-      await fs.mkdirSync(path);
+      await fs.mkdirSync(path, {recursive: true });
     }
     callback(null, path);
   },
