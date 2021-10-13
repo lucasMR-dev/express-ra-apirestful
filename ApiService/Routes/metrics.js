@@ -1,5 +1,4 @@
 const express = require("express");
-const { count } = require("../Models/Metric");
 const Metric = require("../Models/Metric");
 
 // Router Export
