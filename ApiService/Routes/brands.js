@@ -13,9 +13,9 @@ const storageMiddleware = multer.diskStorage({
   destination: async function (req, file, callback) {
     var path = "./Public/brands";
     var dirChk = fs.existsSync(path);
-    if(!dirChk){
+    if (!dirChk) {
       await fs.mkdirSync(path, { recursive: true });
-    }    
+    }
     callback(null, path);
   },
   filename: function (req, file, callback) {
@@ -48,7 +48,7 @@ const router = express.Router();
 router.get("", async (req, res, next) => {
   try {
     // Query Params
-    const { filter, sort, range } = req.query;    
+    const { filter, sort, range } = req.query;
     const data = await queryFilters.brandsFiltersAndSort(filter, sort, range);
     const countFilter = Object.keys(data.brands).length;
     const count = await Brand.countDocuments();
@@ -57,7 +57,7 @@ router.get("", async (req, res, next) => {
       last: req.range.last,
       length: req.range.lenght,
     });
-    if(data.status === "filtered"){
+    if (data.status === "filtered") {
       res.header("X-Total-Count", countFilter);
     } else {
       res.header("X-Total-Count", count);
@@ -98,101 +98,95 @@ router.get("/:id", async (req, res, next) => {
 
 // Post Brand (Closed Route)
 router.post("", upload.single("logo"), jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
-    const uploading = req.file;
-    const { name, partnerStatus, active } = req.body;
-    const categories = JSON.parse(req.body.categories);
-    // Check FormData image is provided if not update parameters passed only
-    if (uploading) {
-      const logo = config.DEPLOY_URL + "/" + uploading.path;
-      const brand = new Brand({
-        name,
-        logo,
-        partnerStatus,
-        active,
-        categories,
-      });
-      try {
-        const newBrand = await brand.save();
-        res.send(newBrand);
-        res.end();
-        next();
-      } catch (error) {
-        return next(error.message);
-      }
-    } else {
-      const brand = new Brand({
-        name,
-        partnerStatus,
-        active,
-        categories,
-      });
-      try {
-        const newBrand = await brand.save();
-        res.send(newBrand);
-        res.end();
-        next();
-      } catch (err) {
-        return next(err.message);
-      }
-    }
-  }
-);
-
-// Update Brand (Closed Route)
-router.patch("/:id", upload.single("logo"),jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
-    const uploading = req.file;
-    const { name, partnerStatus, active } = req.body;
-    const categories = JSON.parse(req.body.categories);
-    // Check FormData image is provided if not update parameters passed only
-    if (uploading) {
-      const logo = config.DEPLOY_URL + "/" + uploading.path;
-      const data = { name, partnerStatus, active, categories, logo };
-      try {
-        const brand = await Brand.findOneAndUpdate(
-          { _id: req.params.id },
-          data,
-          { new: true, runValidators: true }
-        );
-        res.send(brand);
-        res.next();
-      } catch (error) {
-        return next(error.message);
-      }
-    } else {
-      try {
-        const data = { name, partnerStatus, active, categories };
-        const brand = await Brand.findOneAndUpdate(
-          { _id: req.params.id },
-          data,
-          { new: true, runValidators: true}
-        );
-        res.status(200);
-        res.send(brand);
-        res.next();
-      } catch (error) {
-        return next(error.message);
-      }
-    }
-  }
-);
-
-// Delete Brand (Close Route)
-router.delete(
-  "/:id",
-  jwt({ secret: config.JWT_SECRET }),
-  async (req, res, next) => {
+  const uploading = req.file;
+  const { name, partnerStatus, active } = req.body;
+  const categories = JSON.parse(req.body.categories);
+  // Check FormData image is provided if not update parameters passed only
+  if (uploading) {
+    const logo = config.DEPLOY_URL + "/" + uploading.path;
+    const brand = new Brand({
+      name,
+      logo,
+      partnerStatus,
+      active,
+      categories,
+    });
     try {
-      const brand = await Brand.findByIdAndRemove(
-        { _id: req.params.id },
-        { runValidators: true }
-      );
-      res.send("Brand Deleted: " + brand);
+      const newBrand = await brand.save();
+      res.send(newBrand);
       res.end();
       next();
     } catch (error) {
       return next(error.message);
     }
+  } else {
+    const brand = new Brand({
+      name,
+      partnerStatus,
+      active,
+      categories,
+    });
+    try {
+      const newBrand = await brand.save();
+      res.send(newBrand);
+      res.end();
+      next();
+    } catch (err) {
+      return next(err.message);
+    }
   }
-);
+});
+
+// Update Brand (Closed Route)
+router.patch("/:id", upload.single("logo"), jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
+  const uploading = req.file;
+  const { name, partnerStatus, active } = req.body;
+  const categories = JSON.parse(req.body.categories);
+  // Check FormData image is provided if not update parameters passed only
+  if (uploading) {
+    const logo = config.DEPLOY_URL + "/" + uploading.path;
+    const data = { name, partnerStatus, active, categories, logo };
+    try {
+      const brand = await Brand.findOneAndUpdate(
+        { _id: req.params.id },
+        data,
+        { new: true, runValidators: true }
+      );
+      res.send(brand);
+      res.next();
+    } catch (error) {
+      return next(error.message);
+    }
+  } else {
+    try {
+      const data = { name, partnerStatus, active, categories };
+      const brand = await Brand.findOneAndUpdate(
+        { _id: req.params.id },
+        data,
+        { new: true, runValidators: true }
+      );
+      res.status(200);
+      res.send(brand);
+      res.next();
+    } catch (error) {
+      return next(error.message);
+    }
+  }
+});
+
+// Delete Brand (Close Route)
+router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
+  try {
+    const brand = await Brand.findByIdAndRemove(
+      { _id: req.params.id },
+      { runValidators: true }
+    );
+    res.send("Brand Deleted: " + brand);
+    res.end();
+    next();
+  } catch (error) {
+    return next(error.message);
+  }
+});
 
 module.exports = router;

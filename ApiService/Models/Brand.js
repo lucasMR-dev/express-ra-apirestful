@@ -23,7 +23,7 @@ const BrandSchemma = new mongoose.Schema({
     }]
 
 })
-BrandSchemma.index({name: 1});
+BrandSchemma.index({ name: 1 });
 BrandSchemma.plugin(timestamp);
 BrandSchemma.plugin(normalize);
 

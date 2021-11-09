@@ -6,7 +6,7 @@ const MetricSchema = new mongoose.Schema({
     code: {
         type: String
     },
-    name:{
+    name: {
         type: String
     },
     count: {
@@ -15,7 +15,7 @@ const MetricSchema = new mongoose.Schema({
 });
 
 MetricSchema.plugin(timestamp, {
-    createdAt: 'created_at', 
+    createdAt: 'created_at',
     updatedAt: 'updated_at'
 });
 

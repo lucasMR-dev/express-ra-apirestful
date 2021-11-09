@@ -75,7 +75,7 @@ router.post('/login', async (req, res, next) => {
                 }
                 else {
                     res.status(401);
-                    res.json({ "Error": { "message":  "Password incorrect, Please verify information given is correct"} });
+                    res.json({ "Error": { "message": "Password incorrect, Please verify information given is correct" } });
                     res.end();
                 }
             });

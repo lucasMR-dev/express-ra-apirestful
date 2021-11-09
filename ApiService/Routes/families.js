@@ -11,7 +11,7 @@ const router = express.Router();
 router.get("", async (req, res, next) => {
   try {
     // Query Params
-    const { filter, sort, range } = req.query;    
+    const { filter, sort, range } = req.query;
     const data = await queryFilters.familyFiltersAndSort(filter, sort, range);
     const countFilter = Object.keys(data.families).length;
     const count = await Family.countDocuments();
@@ -20,7 +20,7 @@ router.get("", async (req, res, next) => {
       last: req.range.last,
       length: req.range.lenght,
     });
-    if(data.status === "filtered"){
+    if (data.status === "filtered") {
       res.header("X-Total-Count", countFilter);
     } else {
       res.header("X-Total-Count", count);
@@ -59,41 +59,37 @@ router.post("", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
 });
 
 // Update Family (Closed Route)
-router.patch("/:id", jwt({ secret: config.JWT_SECRET }),async (req, res, next) => {
+router.patch("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   try {
-      const family = await Family.findByIdAndUpdate(
-        { _id: req.params.id },
-        req.body,
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
-      res.send(family);
-      next();
-    } catch (error) {
-      return next(error.message);
-    }
+    const family = await Family.findByIdAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.send(family);
+    next();
+  } catch (error) {
+    return next(error.message);
   }
-);
+});
 
 // Delete Family (Close Route)
-router.delete(
-  "/:id",
-  jwt({ secret: config.JWT_SECRET }),
-  async (req, res, next) => {
-    try {
-      const family = await Family.findByIdAndRemove(
-        { _id: req.params.id },
-        { runValidators: true }
-      );
-      res.send("Family Deleted: " + family);
-      res.end();
-      next();
-    } catch (error) {
-      return next(error.message);
-    }
+router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
+  try {
+    const family = await Family.findByIdAndRemove(
+      { _id: req.params.id },
+      { runValidators: true }
+    );
+    res.send("Family Deleted: " + family);
+    res.end();
+    next();
+  } catch (error) {
+    return next(error.message);
   }
+}
 );
 
 module.exports = router;
