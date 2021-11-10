@@ -13,7 +13,7 @@ const CategorySchemma = new mongoose.Schema({
     required: true,
   }
 });
-CategorySchemma.index({name: 1})
+CategorySchemma.index({ name: 1 })
 CategorySchemma.plugin(timestamp);
 CategorySchemma.plugin(normalize);
 

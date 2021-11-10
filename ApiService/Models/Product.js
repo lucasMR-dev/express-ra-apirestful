@@ -49,7 +49,7 @@ const ProductSchemma = new mongoose.Schema({
     pictures: []
 })
 
-ProductSchemma.index({ categories: 1 }); 
+ProductSchemma.index({ categories: 1 });
 ProductSchemma.plugin(timestamp);
 ProductSchemma.plugin(normalize);
 

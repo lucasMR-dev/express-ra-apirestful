@@ -14,7 +14,7 @@ router.get("", async (req, res, next) => {
   try {
     // Query Params
     const { filter, sort, range } = req.query;
-    const data = await queryFilters.categoriesFiltersAndSort(filter, sort, range);    
+    const data = await queryFilters.categoriesFiltersAndSort(filter, sort, range);
     const countFilter = Object.keys(data.categories).length;
     const count = await Category.countDocuments();
     res.range({
@@ -22,7 +22,7 @@ router.get("", async (req, res, next) => {
       last: req.range.last,
       length: req.range.lenght,
     });
-    if(data.status === "filtered"){
+    if (data.status === "filtered") {
       res.header("X-Total-Count", countFilter);
     } else {
       res.header("X-Total-Count", count);
@@ -81,36 +81,32 @@ router.post("", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
 // Update Category (Closed Route)
 router.patch("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   try {
-      const category = await Category.findOneAndUpdate(
-        { _id: req.params.id },
-        req.body,
-        { new: true, runValidators: true }
-      );
-      res.send(category);
-      res.end();
-      next();
+    const category = await Category.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true, runValidators: true }
+    );
+    res.send(category);
+    res.end();
+    next();
   } catch (error) {
-      return next(error.message);
-    }
+    return next(error.message);
+  }
 });
 
 // Delete Category (Close Route)
-router.delete(
-  "/:id",
-  jwt({ secret: config.JWT_SECRET }),
-  async (req, res, next) => {
-    try {
-      const category = await Category.findByIdAndRemove(
-        { _id: req.params.id },
-        { runValidators: true }
-      );
-      res.send("Category Deleted: " + category);
-      res.end();
-      next();
-    } catch (error) {
-      return next(error.message);
-    }
+router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
+  try {
+    const category = await Category.findByIdAndRemove(
+      { _id: req.params.id },
+      { runValidators: true }
+    );
+    res.send("Category Deleted: " + category);
+    res.end();
+    next();
+  } catch (error) {
+    return next(error.message);
   }
-);
+});
 
 module.exports = router;
