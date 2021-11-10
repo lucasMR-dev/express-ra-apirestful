@@ -15,7 +15,7 @@ const storageMiddleware = multer.diskStorage({
     var path = "./Public/products";
     var dirChk = fs.existsSync(path);
     if (!dirChk) {
-      await fs.mkdirSync(path, {recursive: true });
+      await fs.mkdirSync(path, { recursive: true });
     }
     callback(null, path);
   },
@@ -98,12 +98,31 @@ router.get("/:id", async (req, res, next) => {
 });
 
 // Post Product (Closed Route)
-router.post(
-  "",
-  upload.array("pictures", 2),
-  jwt({ secret: config.JWT_SECRET }),
-  async (req, res, next) => {
-    const {
+router.post("", upload.array("pictures", 2), jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
+  const {
+    sku,
+    name,
+    price,
+    salePrice,
+    discount,
+    shortDetails,
+    description,
+    stock,
+    brand,
+    newPro,
+    sale,
+    colorAvailable,
+  } = req.body;
+
+  const categories = JSON.parse(req.body.categories);
+  const tags = JSON.parse(req.body.tags);
+  const uploading = req.files;
+  // Check FormData images are provided if not update parameters passed only
+  if (uploading) {
+    const small = config.DEPLOY_URL + "/" + uploading[0].path;
+    const big = config.DEPLOY_URL + "/" + uploading[1].path;
+    const pictures = { small: small, big: big };
+    const product = new Product({
       sku,
       name,
       price,
@@ -115,143 +134,110 @@ router.post(
       brand,
       newPro,
       sale,
+      categories,
+      tags,
       colorAvailable,
-    } = req.body;
-
-    const categories = JSON.parse(req.body.categories);
-    const tags = JSON.parse(req.body.tags);
-    const uploading = req.files;
-    // Check FormData images are provided if not update parameters passed only
-    if (uploading) {
-      const small = config.DEPLOY_URL + "/" + uploading[0].path;
-      const big = config.DEPLOY_URL + "/" + uploading[1].path;
-      const pictures = { small: small, big: big };
-      const product = new Product({
-        sku,
-        name,
-        price,
-        salePrice,
-        discount,
-        shortDetails,
-        description,
-        stock,
-        brand,
-        newPro,
-        sale,
-        categories,
-        tags,
-        colorAvailable,
-        pictures,
-      });
-      try {
-        const brand_id = await Brand.findOne({ _id: brand })
-          .then(async function (result) {
-            if (result != null) {
-              const newProduct = await product.save();
-              res.send(newProduct);
-              res.next();
-            } else {
-              res.send("Make sure to create the brands before the products.");
-              res.next();
-            }
-          })
-          .catch(function (err) {
-            return err.message;
-          });
-      } catch (error) {
-        return next(error.message);
-      }
-    } else {
-      const product = new Product({
-        sku,
-        name,
-        price,
-        salePrice,
-        discount,
-        shortDetails,
-        description,
-        stock,
-        brand,
-        newPro,
-        sale,
-        categories,
-        tags,
-        colorAvailable,
-      });
-      try {
-        const newProduct = await product.save();
-        res.send(newProduct);
-        res.next();
-      } catch (error) {
-        return next(error.message);
-      }
+      pictures,
+    });
+    try {
+      const brand_id = await Brand.findOne({ _id: brand })
+        .then(async function (result) {
+          if (result != null) {
+            const newProduct = await product.save();
+            res.send(newProduct);
+            res.next();
+          } else {
+            res.send("Make sure to create the brands before the products.");
+            res.next();
+          }
+        })
+        .catch(function (err) {
+          return err.message;
+        });
+    } catch (error) {
+      return next(error.message);
+    }
+  } else {
+    const product = new Product({
+      sku,
+      name,
+      price,
+      salePrice,
+      discount,
+      shortDetails,
+      description,
+      stock,
+      brand,
+      newPro,
+      sale,
+      categories,
+      tags,
+      colorAvailable,
+    });
+    try {
+      const newProduct = await product.save();
+      res.send(newProduct);
+      res.next();
+    } catch (error) {
+      return next(error.message);
     }
   }
-);
+});
 
 // Update Product (Closed Route)
-router.patch(
-  "/:id",
-  upload.array("pictures", 2),
-  jwt({ secret: config.JWT_SECRET }),
-  async (req, res, next) => {
-    const body = req.body;
-    const categories = JSON.parse(body.categories);
-    const tags = JSON.parse(body.tags);
-    const uploading = req.files;
-    // Check FormData images are provided if not update parameters passed only
-    if (uploading) {
-      const small = config.DEPLOY_URL + "/" + uploading[0].path;
-      const big = config.DEPLOY_URL + "/" + uploading[1].path;
-      const pictures = { small: small, big: big };
-      const data = { body, categories, tags, pictures };
-      try {
-        const product = await Product.findOneAndUpdate(
-          { _id: req.params.id },
-          data,
-          { new: true, runValidators: true }
-        );
-        res.send(product);
-        res.end();
-        next();
-      } catch (error) {
-        return next(error.message);
-      }
-    } else {
-      const data = { body, categories, tags };
-      try {
-        const product = await Product.findOneAndUpdate(
-          { _id: req.params.id },
-          data,
-          { new: true, runValidators: true }
-        );
-        res.send(product);
-        res.end();
-        next();
-      } catch (error) {
-        return next(error.message);
-      }
-    }
-  }
-);
-
-// Delete Product (Close Route)
-router.delete(
-  "/:id",
-  jwt({ secret: config.JWT_SECRET }),
-  async (req, res, next) => {
+router.patch("/:id", upload.array("pictures", 2), jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
+  const body = req.body;
+  const categories = JSON.parse(body.categories);
+  const tags = JSON.parse(body.tags);
+  const uploading = req.files;
+  // Check FormData images are provided if not update parameters passed only
+  if (uploading) {
+    const small = config.DEPLOY_URL + "/" + uploading[0].path;
+    const big = config.DEPLOY_URL + "/" + uploading[1].path;
+    const pictures = { small: small, big: big };
+    const data = { body, categories, tags, pictures };
     try {
-      const product = await Product.findOneAndRemove(
+      const product = await Product.findOneAndUpdate(
         { _id: req.params.id },
-        { runValidators: true }
+        data,
+        { new: true, runValidators: true }
       );
-      res.send("Product Deleted: " + product);
+      res.send(product);
+      res.end();
+      next();
+    } catch (error) {
+      return next(error.message);
+    }
+  } else {
+    const data = { body, categories, tags };
+    try {
+      const product = await Product.findOneAndUpdate(
+        { _id: req.params.id },
+        data,
+        { new: true, runValidators: true }
+      );
+      res.send(product);
       res.end();
       next();
     } catch (error) {
       return next(error.message);
     }
   }
-);
+});
+
+// Delete Product (Close Route)
+router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
+  try {
+    const product = await Product.findOneAndRemove(
+      { _id: req.params.id },
+      { runValidators: true }
+    );
+    res.send("Product Deleted: " + product);
+    res.end();
+    next();
+  } catch (error) {
+    return next(error.message);
+  }
+});
 
 module.exports = router;

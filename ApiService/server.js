@@ -36,28 +36,28 @@ server.use(
 server.use(bodyParser.json());
 
 // Static Files
-server.use(version+"/public", express.static("Public/profiles"));
-server.use(version+"/assets", express.static("Public/assets"));
-server.use(version+"/Public/products", express.static("Public/products"));
-server.use(version+"/Public/brands", express.static("Public/brands"));
+server.use(version + "/public", express.static("Public/profiles"));
+server.use(version + "/assets", express.static("Public/assets"));
+server.use(version + "/Public/products", express.static("Public/products"));
+server.use(version + "/Public/brands", express.static("Public/brands"));
 
 // Routers
-server.use(version+"/users", usersRouter);
-server.use(version+"/auth", AuthRouter);
-server.use(version+"/profile", profileRouter);
-server.use(version+"/products", productRouter);
-server.use(version+"/categories", categoriesRouter);
-server.use(version+"/brands", brandsRouter);
-server.use(version+"/families", familiesRouter);
-server.use(version+"/metrics", metricsRouter);
+server.use(version + "/users", usersRouter);
+server.use(version + "/auth", AuthRouter);
+server.use(version + "/profile", profileRouter);
+server.use(version + "/products", productRouter);
+server.use(version + "/categories", categoriesRouter);
+server.use(version + "/brands", brandsRouter);
+server.use(version + "/families", familiesRouter);
+server.use(version + "/metrics", metricsRouter);
 
 // Index Page
-server.get(version+"/", function (req, res) {
+server.get(version + "/", function (req, res) {
   res.sendFile(path.join(__dirname + "/index.html"));
 });
 
 // Favicon
-server.get(version+'/favicon.ico', (req, res) => res.sendStatus(204).end());
+server.get(version + '/favicon.ico', (req, res) => res.sendStatus(204).end());
 
 // No Token Eror 401 Handle
 server.use(function (err, req, res, next) {
@@ -81,9 +81,3 @@ const db = mongoose.connection;
 db.on("error", (err) => console.log(err));
 
 db.once("open", () => console.log(`Server started on port: ${config.PORT}`));
-
-// Not Found Error 404 Handle
-/*server.use(function (res) {
-  res.status(404).send("Request not found");
-});
-*/

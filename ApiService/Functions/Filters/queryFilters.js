@@ -12,24 +12,24 @@ exports.brandsFiltersAndSort = (filter, sort, range) => {
   return new Promise(async (resolve, reject) => {
     try {
       // Check Empty filters and sort lenght
-      var filterLenght = Object.keys(filter).length;
-      var sortLenght = Object.keys(sort).length;
+      let filterLenght = Object.keys(filter).length;
+      let sortLenght = Object.keys(sort).length;
       // String to JSON
-      var fieldFilter = JSON.parse(filter);
-      var sortFilter = JSON.parse(sort);
+      let fieldFilter = JSON.parse(filter);
+      let sortFilter = JSON.parse(sort);
       // Init State
-      var brands;
-      var filteredQuery;
-      var status = "sorted";
+      let brands;
+      let filteredQuery;
+      let status = "sorted";
       // Parse Sort Query to MongoDB sort ex: sort({key: value})
-      var sortJson = {};
-      var key = sortFilter[0];
-      var val = sortFilter[1];
+      let sortJson = {};
+      let key = sortFilter[0];
+      let val = sortFilter[1];
       sortJson[key] = val;
       // Pagination
-      var pagination = JSON.parse(range);
-      var page = pagination[0];
-      var limit = pagination[1];
+      let pagination = JSON.parse(range);
+      let page = pagination[0];
+      let limit = pagination[1];
       // Only Sort
       if (sortLenght > 2 && filterLenght <= 2) {
         // Add Sort Query
@@ -42,22 +42,22 @@ exports.brandsFiltersAndSort = (filter, sort, range) => {
       // Field filter and Order
       else if (filterLenght > 2 && sortLenght > 2) {
         // Filter by field value, MongoDB equivalent to condition '%like'
-        var qName = fieldFilter.name;
-        var qCat = fieldFilter.categories;
-        var allQuery = {};
+        let qName = fieldFilter.name;
+        let qCat = fieldFilter.categories;
+        let allQuery = {};
         if (qName) {
           allQuery["name"] = { $regex: qName, $options: "i" };
         }
         if (qCat) {
-          var catQuery = await Category.find({
+          let catQuery = await Category.find({
             name: { $regex: qCat, $options: "i" },
           });
-          var catId = catQuery[0]._id;
+          let catId = catQuery[0]._id;
           allQuery["categories"] = catId;
         }
         /**
          * @var filteredQuery
-         * Query with variables
+         * Query with letiables
          */
         filteredQuery = await Brand.find({
           $and: [
@@ -93,25 +93,25 @@ exports.categoriesFiltersAndSort = (filter, sort, range) => {
   return new Promise(async (resolve, reject) => {
     try {
       // Check Empty filters and sort lenght
-      var filterLenght = Object.keys(filter).length;
-      var sortLenght = Object.keys(sort).length;
+      let filterLenght = Object.keys(filter).length;
+      let sortLenght = Object.keys(sort).length;
       // String to JSON
-      var fieldFilter = JSON.parse(filter);
-      var sortFilter = JSON.parse(sort);
+      let fieldFilter = JSON.parse(filter);
+      let sortFilter = JSON.parse(sort);
       // Init State
-      var categories;
-      var filteredQuery;
-      var sortQuery;
-      var status = "sorted";
+      let categories;
+      let filteredQuery;
+      let sortQuery;
+      let status = "sorted";
       // Parse Sort Query to MongoDB sort ex: sort({key: value})
-      var sortJson = {};
-      var key = sortFilter[0];
-      var val = sortFilter[1];
+      let sortJson = {};
+      let key = sortFilter[0];
+      let val = sortFilter[1];
       sortJson[key] = val;
       // Pagination
-      var pagination = JSON.parse(range);
-      var page = pagination[0];
-      var limit = pagination[1];
+      let pagination = JSON.parse(range);
+      let page = pagination[0];
+      let limit = pagination[1];
       // Only Sort
       if (sortLenght > 2 && filterLenght <= 2) {
         // Add Sort Query
@@ -125,22 +125,22 @@ exports.categoriesFiltersAndSort = (filter, sort, range) => {
       // Field filter and Order
       else if (filterLenght > 2 && sortLenght > 2) {
         // Filter by field value, MongoDB equivalent to condition '%like'
-        var qName = fieldFilter.name;
-        var qFamily = fieldFilter.family;
-        var allQuery = {};
+        let qName = fieldFilter.name;
+        let qFamily = fieldFilter.family;
+        let allQuery = {};
         if (qName) {
           allQuery["name"] = { $regex: qName, $options: "i" };
         }
         if (qFamily) {
-          var famQuery = await Family.find({
+          let famQuery = await Family.find({
             name: { $regex: qFamily, $options: "i" },
           });
-          var famId = famQuery[0]._id;
+          let famId = famQuery[0]._id;
           allQuery["family"] = famId;
         }
         /**
          * @var filteredQuery
-         * Query with variables
+         * Query with letiables
          */
         filteredQuery = await Category.find({
           $and: [
@@ -180,24 +180,24 @@ exports.productsFiltersAndSort = (filter, sort, range) => {
   return new Promise(async (resolve, reject) => {
     try {
       // Check Empty filters and sort lenght
-      var filterLenght = Object.keys(filter).length;
-      var sortLenght = Object.keys(sort).length;
+      let filterLenght = Object.keys(filter).length;
+      let sortLenght = Object.keys(sort).length;
       // String to JSON
-      var fieldFilter = JSON.parse(filter);
-      var sortFilter = JSON.parse(sort);
+      let fieldFilter = JSON.parse(filter);
+      let sortFilter = JSON.parse(sort);
       // Init State
-      var products;
-      var filteredQuery;
-      var status = "sorted";
+      let products;
+      let filteredQuery;
+      let status = "sorted";
       // Parse Sort Query to MongoDB sort ex: sort({key: value})
-      var sortJson = {};
-      var key = sortFilter[0];
-      var val = sortFilter[1];
+      let sortJson = {};
+      let key = sortFilter[0];
+      let val = sortFilter[1];
       sortJson[key] = val;
       // Pagination
-      var pagination = JSON.parse(range);
-      var page = pagination[0];
-      var limit = pagination[1];
+      let pagination = JSON.parse(range);
+      let page = pagination[0];
+      let limit = pagination[1];
       // Only Sort
       if (sortLenght > 2 && filterLenght <= 2) {
         // Add Sort Query
@@ -210,13 +210,13 @@ exports.productsFiltersAndSort = (filter, sort, range) => {
       // Field filter and Order
       else if (filterLenght > 2 && sortLenght > 2) {
         // Filter by field value, MongoDB equivalent to condition '%like'
-        var qName = fieldFilter.name;
-        var qSku = parseInt(fieldFilter.sku);
-        var qBrand = fieldFilter.brand;
-        var qCat = fieldFilter.categories;
-        var qTag = fieldFilter.tags;
+        let qName = fieldFilter.name;
+        let qSku = parseInt(fieldFilter.sku);
+        let qBrand = fieldFilter.brand;
+        let qCat = fieldFilter.categories;
+        let qTag = fieldFilter.tags;
         // Json QueryWW
-        var allQuery = {};
+        let allQuery = {};
         if (qName) {
           allQuery["name"] = { $regex: qName, $options: "i" };
         }
@@ -227,22 +227,22 @@ exports.productsFiltersAndSort = (filter, sort, range) => {
           allQuery["sku"] = { $in: [qSku, qSku] };
         }
         if (qBrand) {
-          var brandQuery = await Brand.find({
+          let brandQuery = await Brand.find({
             name: { $regex: qBrand, $options: "i" },
           });
-          var brandId = brandQuery[0]._id;
+          let brandId = brandQuery[0]._id;
           allQuery["brand"] = brandId;
         }
         if (qCat) {
-          var catQuery = await Category.find({
+          let catQuery = await Category.find({
             name: { $regex: qCat, $options: "i" },
           });
-          var catId = catQuery[0]._id;
+          let catId = catQuery[0]._id;
           allQuery["categories"] = catId;
         }
         /**
          * @var filteredQuery
-         * Query with variables
+         * Query with letiables
          */
         filteredQuery = await Product.find({
           $and: [
@@ -282,23 +282,23 @@ exports.familyFiltersAndSort = (filter, sort, range) => {
   return new Promise(async (resolve, reject) => {
     try {
       // Check Empty filters and sort lenght
-      var filterLenght = Object.keys(filter).length;
-      var sortLenght = Object.keys(sort).length;
+      let filterLenght = Object.keys(filter).length;
+      let sortLenght = Object.keys(sort).length;
       // String to JSON
-      var nameQuery = JSON.parse(filter);
-      var sortFilter = JSON.parse(sort);
-      var families;
-      var filteredQuery;
-      var status = "sorted";
+      let nameQuery = JSON.parse(filter);
+      let sortFilter = JSON.parse(sort);
+      let families;
+      let filteredQuery;
+      let status = "sorted";
       // Parse Sort Query to MongoDB sort ex: sort({key: value})
-      var sortJson = {};
-      var key = sortFilter[0];
-      var val = sortFilter[1];
+      let sortJson = {};
+      let key = sortFilter[0];
+      let val = sortFilter[1];
       sortJson[key] = val;
       // Pagination
-      var pagination = JSON.parse(range);
-      var page = pagination[0];
-      var limit = pagination[1];
+      let pagination = JSON.parse(range);
+      let page = pagination[0];
+      let limit = pagination[1];
       // Only Sort
       if (sortLenght > 2 && filterLenght <= 2) {
         // Add Sort Query
@@ -311,15 +311,15 @@ exports.familyFiltersAndSort = (filter, sort, range) => {
       // Field filter and Order
       else if (filterLenght > 2 && sortLenght > 2) {
         // Filter by field value, MongoDB equivalent to condition '%like'
-        var qName = nameQuery.name;
-        var allQuery = {};
+        let qName = nameQuery.name;
+        let allQuery = {};
         if (qName) {
           allQuery["name"] = { $regex: qName, $options: "i" };
         }
 
         /**
          * @var filteredQuery
-         * Query with variables
+         * Query with letiables
          */
         filteredQuery = await Family.find({
           $and: [
@@ -353,22 +353,22 @@ exports.familyFiltersAndSort = (filter, sort, range) => {
 exports.usersFiltersAndSort = (filter, sort, range) => {
   return new Promise(async (resolve, reject) => {
     try {
-      var filterLenght = Object.keys(filter).length;
-      var sortLenght = Object.keys(sort).length;
+      let filterLenght = Object.keys(filter).length;
+      let sortLenght = Object.keys(sort).length;
       // String to JSON;
-      var sortFilter = JSON.parse(sort);
-      var users;
-      var filteredQuery;
-      var status = "sorted";
+      let sortFilter = JSON.parse(sort);
+      let users;
+      let filteredQuery;
+      let status = "sorted";
       // Parse Sort Query to MongoDB sort ex: sort({key: value})
-      var sortJson = {};
-      var key = sortFilter[0];
-      var val = sortFilter[1];
+      let sortJson = {};
+      let key = sortFilter[0];
+      let val = sortFilter[1];
       sortJson[key] = val;
       // Pagination
-      var pagination = JSON.parse(range);
-      var page = pagination[0];
-      var limit = pagination[1];
+      let pagination = JSON.parse(range);
+      let page = pagination[0];
+      let limit = pagination[1];
       if (sortLenght > 2 && filterLenght <= 2) {
         // Add Sort Query
         filteredQuery = await User.find({})

@@ -25,7 +25,7 @@ router.get("", async (req, res, next) => {
       last: req.range.last,
       length: req.range.lenght,
     });
-    if(data.status === "filtered"){
+    if (data.status === "filtered") {
       res.header("X-Total-Count", countFilter);
     } else {
       res.header("X-Total-Count", count);
@@ -86,46 +86,38 @@ router.post("", async (req, res, next) => {
 });
 
 // Update User (Closed Route)
-router.patch(
-  "/:id",
-  jwt({ secret: config.JWT_SECRET }),
-  async (req, res, next) => {
-    try {
-      const user = await User.findOneAndUpdate(
-        { _id: req.params.id },
-        req.body,
-        { new: true, runValidators: true }
-      );
-      const data = {
-        username: user.username,
-        email: user.email,
-        isActive: user.isActive,
-        access_type: user.access_type,
-        id: user._id,
-      };
-      res.send(data);
-      res.end();
-      next();
-    } catch (error) {
-      return next(error.message);
-    }
+router.patch("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true, runValidators: true }
+    );
+    const data = {
+      username: user.username,
+      email: user.email,
+      isActive: user.isActive,
+      access_type: user.access_type,
+      id: user._id,
+    };
+    res.send(data);
+    res.end();
+    next();
+  } catch (error) {
+    return next(error.message);
   }
-);
+});
 
 // Delete User (Closed Route)
-router.delete(
-  "/:id",
-  jwt({ secret: config.JWT_SECRET }),
-  async (req, res, next) => {
-    try {
-      const user = await User.findOneAndDelete({ _id: req.params.id });
-      res.send(user);
-      res.end();
-      next();
-    } catch (err) {
-      return next(err.message);
-    }
+router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
+  try {
+    const user = await User.findOneAndDelete({ _id: req.params.id });
+    res.send(user);
+    res.end();
+    next();
+  } catch (err) {
+    return next(err.message);
   }
-);
+});
 
 module.exports = router;
