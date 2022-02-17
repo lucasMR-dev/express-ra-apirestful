@@ -7,7 +7,6 @@ const FamilySchemma = new mongoose.Schema({
         type: String,
         unique: true
     },
-
 });
 
 FamilySchemma.plugin(timestamp);

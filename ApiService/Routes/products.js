@@ -50,21 +50,30 @@ router.get("", async (req, res, next) => {
   try {
     // Query Params
     const { filter, sort, range } = req.query;
-    const data = await queryFilters.productsFiltersAndSort(filter, sort, range);
-    const countFilter = Object.keys(data.products).length;
-    const count = await Product.countDocuments();
-    res.range({
-      first: req.range.first,
-      last: req.range.last,
-      length: req.range.lenght,
-    });
-    if (data.status === "filtered") {
-      res.header("X-Total-Count", countFilter);
-    } else {
-      res.header("X-Total-Count", count);
+    if (filter && sort && range) {
+      const data = await queryFilters.productsFiltersAndSort(filter, sort, range);
+      const countFilter = Object.keys(data.products).length;
+      const count = await Product.countDocuments();
+      res.range({
+        first: req.range.first,
+        last: req.range.last,
+        length: req.range.lenght,
+      });
+      if (data.status === "filtered") {
+        res.header("X-Total-Count", countFilter);
+      } else {
+        res.header("X-Total-Count", count);
+      }
+      res.json(data.products.slice(req.range.first, req.range.last + 1));
+      next();
     }
-    res.json(data.products.slice(req.range.first, req.range.last + 1));
-    next();
+    else {
+      const data = await Product.find({})
+        .populate("brand", "name")
+        .populate("categories", "name");
+      res.status(200).send(data).end();
+      next();
+    }
   } catch (err) {
     return next(err.message);
   }
@@ -113,74 +122,50 @@ router.post("", upload.array("pictures", 2), jwt({ secret: config.JWT_SECRET }),
     sale,
     colorAvailable,
   } = req.body;
-
-  const categories = JSON.parse(req.body.categories);
-  const tags = JSON.parse(req.body.tags);
+  const categories = req.body.categories;
+  const tags = req.body.tags;
   const uploading = req.files;
+  let pictures = { small: "", big: "" };
   // Check FormData images are provided if not update parameters passed only
   if (uploading) {
     const small = config.DEPLOY_URL + "/" + uploading[0].path;
     const big = config.DEPLOY_URL + "/" + uploading[1].path;
-    const pictures = { small: small, big: big };
-    const product = new Product({
-      sku,
-      name,
-      price,
-      salePrice,
-      discount,
-      shortDetails,
-      description,
-      stock,
-      brand,
-      newPro,
-      sale,
-      categories,
-      tags,
-      colorAvailable,
-      pictures,
-    });
-    try {
-      const brand_id = await Brand.findOne({ _id: brand })
-        .then(async function (result) {
-          if (result != null) {
-            const newProduct = await product.save();
-            res.send(newProduct);
-            res.next();
-          } else {
-            res.send("Make sure to create the brands before the products.");
-            res.next();
-          }
-        })
-        .catch(function (err) {
-          return err.message;
-        });
-    } catch (error) {
-      return next(error.message);
-    }
-  } else {
-    const product = new Product({
-      sku,
-      name,
-      price,
-      salePrice,
-      discount,
-      shortDetails,
-      description,
-      stock,
-      brand,
-      newPro,
-      sale,
-      categories,
-      tags,
-      colorAvailable,
-    });
-    try {
-      const newProduct = await product.save();
-      res.send(newProduct);
-      res.next();
-    } catch (error) {
-      return next(error.message);
-    }
+    pictures = { small: small, big: big };
+  }
+  const product = new Product({
+    sku,
+    name,
+    price,
+    salePrice,
+    discount,
+    shortDetails,
+    description,
+    stock,
+    brand,
+    newPro,
+    sale,
+    categories,
+    tags,
+    colorAvailable,
+    pictures,
+  });
+  try {
+    let brand_id = await Brand.findOne({ _id: brand })
+      .then(async function (result) {
+        if (result != null) {
+          const newProduct = await product.save();
+          res.send(newProduct);
+          res.next();
+        } else {
+          res.status(404).send("Make sure to create the brands before the products.");
+          res.next();
+        }
+      })
+      .catch(function (err) {
+        return err.message;
+      });
+  } catch (error) {
+    return next(error.message);
   }
 });
 
@@ -232,9 +217,15 @@ router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next)
       { _id: req.params.id },
       { runValidators: true }
     );
-    res.send("Product Deleted: " + product);
-    res.end();
-    next();
+    if (product) {
+      res.status(204).send("Product Deleted: " + product);
+      res.end();
+      next();
+    } else {
+      res.status(404);
+      res.end();
+      next();
+    }
   } catch (error) {
     return next(error.message);
   }

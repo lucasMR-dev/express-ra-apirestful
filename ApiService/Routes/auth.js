@@ -25,17 +25,20 @@ router.post('/register', (req, res, next) => {
             user.password = hash;
             //Save user
             try {
-                const newUser = await user.save();
-                const profile = new Profile({
-                    firstname: user.username,
-                    lastname: '',
-                    birthday: '',
-                    user: newUser._id
+                const newUser = await user.save().then( async () => {
+                    const profile = new Profile({
+                        firstname: user.username,
+                        lastname: '',
+                        birthday: '',
+                        user: newUser._id
+                    });
+                    const newProfile = await profile.save();
+                    res.send(newProfile).end();
+                    next();
+                }).catch ( () => {
+                    res.status(403).json({ "Error": { "message": "Not allowed" } }).end();
+                    next();
                 });
-                const newProfile = await profile.save();
-                res.send(newProfile);
-                res.end();
-                next();
             }
             catch (err) {
                 return next(err.message);
@@ -68,22 +71,16 @@ router.post('/login', async (req, res, next) => {
                         next();
                     }
                     else {
-                        res.status(403);
-                        res.json({ "Error": { "message": "This User is currently Inactive, please contact Administration for help" } });
-                        res.end();
+                        res.status(403).json({ "Error": { "message": "This User is currently Inactive, please contact Administration for help" } }).end();
                     }
                 }
                 else {
-                    res.status(401);
-                    res.json({ "Error": { "message": "Password incorrect, Please verify information given is correct" } });
-                    res.end();
+                    res.status(401).json({ "Error": { "message": "Password incorrect, Please verify information given is correct" } }).end();
                 }
             });
         }
         else {
-            res.status(404);
-            res.json({ "Error": { "message": "Credentials not found" } });
-            res.end();
+            res.status(404).json({ "Error": { "message": "Credentials not found" } }).end();
         }
 
     }

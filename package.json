@@ -4,8 +4,9 @@
   "description": "Express Based Apirest Backend w/ MongoDB",
   "main": "ApiService/server.js",
   "scripts": {
-    "start": "node ApiService/server.js",
-    "dev": "nodemon ApiService/server.js"
+    "start": "NODE_ENV=production node ApiService/server.js",
+    "dev": "NODE_ENV=development nodemon ApiService/server.js",
+    "test": "NODE_ENV=test jest --no-cache  --detectOpenHandles --runInBand --forceExit"
   },
   "author": "Lucas Mardones Rivera <l.mardones91@gmail.com>",
   "license": "ISC",
@@ -16,11 +17,21 @@
     "express": "^4.17.1",
     "express-jwt": "^5.3.1",
     "express-range": "^2.0.1",
+    "jest": "^27.4.5",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.5",
     "mongoose-timestamp": "^0.6.0",
     "multer": "^1.4.2",
     "nodemon": "^2.0.4",
     "normalize-mongoose": "0.0.1"
+  },
+  "devDependencies": {
+    "supertest": "^6.1.6"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules"
+    ]
   }
 }

@@ -49,21 +49,28 @@ router.get("", async (req, res, next) => {
   try {
     // Query Params
     const { filter, sort, range } = req.query;
-    const data = await queryFilters.brandsFiltersAndSort(filter, sort, range);
-    const countFilter = Object.keys(data.brands).length;
-    const count = await Brand.countDocuments();
-    res.range({
-      first: req.range.first,
-      last: req.range.last,
-      length: req.range.lenght,
-    });
-    if (data.status === "filtered") {
-      res.header("X-Total-Count", countFilter);
+    if (filter && sort && range) {
+      const data = await queryFilters.brandsFiltersAndSort(filter, sort, range);
+      const countFilter = Object.keys(data.brands).length;
+      const count = await Brand.countDocuments();
+      res.range({
+        first: req.range.first,
+        last: req.range.last,
+        length: req.range.lenght,
+      });
+      if (data.status === "filtered") {
+        res.header("X-Total-Count", countFilter);
+      } else {
+        res.header("X-Total-Count", count);
+      }
+      res.json(data.brands.slice(req.range.first, req.range.last + 1));
+      next();
     } else {
-      res.header("X-Total-Count", count);
+      const data = await Brand.find({})
+        .populate("categories", "name");
+      res.status(200).send(data).end();
+      next();
     }
-    res.json(data.brands.slice(req.range.first, req.range.last + 1));
-    next();
   } catch (err) {
     return next(err.message);
   }
