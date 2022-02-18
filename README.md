@@ -7,6 +7,7 @@
 
 ## What is this Repo all about? ##
 This is a simple MERN Stack application, Each service is isolated and comunicate each other throughth a specific Docker network.
+
 You can change the Frontend and Backend to your desire, making more easy to setup your own app!
 
 
@@ -14,7 +15,7 @@ You can change the Frontend and Backend to your desire, making more easy to setu
 
 ### Build the app images ###
 ```
-    * Before Please Checkout Instructions inside Each Folder
+    Before creating the Images, Please Checkout Instructions inside Each Service Folder!
 
     Commands:
     - cd path/to/the/folder/Frontend > make 
