@@ -24,14 +24,15 @@
         "access_type": "admin" # So we get all privilages at once let set it to admin
     }
 ```
-- Now we will be able to Login into the Admin Panel and update our Profile information
+- Now we will be able to Login into the Frontend
 
 ### Unit Tests ###
-- Run `npm run test` on Development mode if you pass all test you're good to go
+In Development mode you can run the Unit Tests:
+- Run command `npm run test`
 
 ### Development Server ###
 
-- Use command `npm run dev` this allow nodemon to restart automatically our server when a file change.
+- Use command `npm run dev`
 
 ### Production Server Deploy ###
 
