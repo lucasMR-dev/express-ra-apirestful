@@ -14,21 +14,28 @@ router.get("", async (req, res, next) => {
   try {
     // Query Params
     const { filter, sort, range } = req.query;
-    const data = await queryFilters.categoriesFiltersAndSort(filter, sort, range);
-    const countFilter = Object.keys(data.categories).length;
-    const count = await Category.countDocuments();
-    res.range({
-      first: req.range.first,
-      last: req.range.last,
-      length: req.range.lenght,
-    });
-    if (data.status === "filtered") {
-      res.header("X-Total-Count", countFilter);
+    if (filter && sort && range) {
+      const data = await queryFilters.categoriesFiltersAndSort(filter, sort, range);
+      const countFilter = Object.keys(data.categories).length;
+      const count = await Category.countDocuments();
+      res.range({
+        first: req.range.first,
+        last: req.range.last,
+        length: req.range.lenght,
+      });
+      if (data.status === "filtered") {
+        res.header("X-Total-Count", countFilter);
+      } else {
+        res.header("X-Total-Count", count);
+      }
+      res.json(data.categories.slice(req.range.first, req.range.last + 1));
+      next();
     } else {
-      res.header("X-Total-Count", count);
+      const data = await Category.find({})
+        .populate("family", "name");
+      res.status(200).send(data).end();
+      next();
     }
-    res.json(data.categories.slice(req.range.first, req.range.last + 1));
-    next();
   } catch (err) {
     return next(err.message);
   }
@@ -70,9 +77,10 @@ router.post("", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
     family,
   });
   try {
-    const newCategory = await category.save();
-    res.send(newCategory);
-    res.end();
+    const newCategory = await category.save(function (err, success) {
+      err ? res.status(400).send(`${err.name}[${err.code}]`).end() : res.status(201).send(success).end();
+      return next();
+    });
   } catch (error) {
     return next(error.message);
   }
@@ -101,9 +109,14 @@ router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next)
       { _id: req.params.id },
       { runValidators: true }
     );
-    res.send("Category Deleted: " + category);
-    res.end();
-    next();
+    if (category) {
+      res.status(204).send("Category Deleted: " + category).end();
+      next();
+    }
+    else {
+      res.status(404).end();
+      next();
+    }
   } catch (error) {
     return next(error.message);
   }

@@ -57,7 +57,7 @@ exports.brandsFiltersAndSort = (filter, sort, range) => {
         }
         /**
          * @var filteredQuery
-         * Query with letiables
+         * Query with variables
          */
         filteredQuery = await Brand.find({
           $and: [
@@ -72,11 +72,6 @@ exports.brandsFiltersAndSort = (filter, sort, range) => {
 
         brands = filteredQuery;
         status = "filtered";
-      }
-      // Default ALL_LIST
-      else {
-        const brandsQuery = await Brand.find().populate("categories", "name");
-        brands = brandsQuery;
       }
       resolve({brands, status});
     } catch (err) {
@@ -140,7 +135,7 @@ exports.categoriesFiltersAndSort = (filter, sort, range) => {
         }
         /**
          * @var filteredQuery
-         * Query with letiables
+         * Query with variables
          */
         filteredQuery = await Category.find({
           $and: [
@@ -156,15 +151,7 @@ exports.categoriesFiltersAndSort = (filter, sort, range) => {
 
         categories = filteredQuery;
         status = "filtered";
-      }
-      // Default ALL_LIST
-      else {
-        const categoriesQuery = await Category.find({}).populate(
-          "family",
-          "name"
-        );
-        categories = categoriesQuery;
-      }
+      }      
       resolve({categories, status});
     } catch (err) {
       reject("Query Failed" + err);
@@ -242,7 +229,7 @@ exports.productsFiltersAndSort = (filter, sort, range) => {
         }
         /**
          * @var filteredQuery
-         * Query with letiables
+         * Query with variables
          */
         filteredQuery = await Product.find({
           $and: [
@@ -259,14 +246,7 @@ exports.productsFiltersAndSort = (filter, sort, range) => {
 
         products = filteredQuery;
         status = "filtered";
-      }
-      // Default ALL_LIST
-      else {
-        const productsQuery = await Product.find({})
-          .populate("brand", "name")
-          .populate("categories", "name");
-        products = productsQuery;
-      }
+      }      
       resolve({products, status});
     } catch (err) {
       reject("Query Failed" + err);
@@ -319,7 +299,7 @@ exports.familyFiltersAndSort = (filter, sort, range) => {
 
         /**
          * @var filteredQuery
-         * Query with letiables
+         * Query with variables
          */
         filteredQuery = await Family.find({
           $and: [
@@ -333,11 +313,6 @@ exports.familyFiltersAndSort = (filter, sort, range) => {
           .limit(limit + 1);
         families = filteredQuery;
         status = "filtered";
-      }
-      // Default ALL_LIST
-      else {
-        const familiesQuery = await Family.find({});
-        families = familiesQuery;
       }
       resolve({families, status});
     } catch (err) {
