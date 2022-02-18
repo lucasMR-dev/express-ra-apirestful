@@ -52,31 +52,14 @@ router.get("/:id", async (req, res, next) => {
 // Post Family (Closed Route)
 router.post("", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   const { name } = req.body;
-  const family = new Family({
-    name,
-  });
   try {
-    const newFamily = await family.save();
-    res.send(newFamily);
-    res.end();
-  } catch (error) {
-    return next(error.message);
-  }
-});
-
-// Update Family (Closed Route)
-router.patch("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
-  try {
-    const family = await Family.findByIdAndUpdate(
-      { _id: req.params.id },
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-    res.send(family);
-    next();
+    const family = new Family({
+      name,
+    });
+    const newFamily = family.save(function (err, success) {
+      err ? res.status(400).send(`${err.name}[${err.code}] - Failed: Duplicate Key "${err.keyValue.name}"`).end() : res.status(201).send(success).end();
+      return next();
+    });
   } catch (error) {
     return next(error.message);
   }
@@ -89,9 +72,14 @@ router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next)
       { _id: req.params.id },
       { runValidators: true }
     );
-    res.send("Family Deleted: " + family);
-    res.end();
-    next();
+    if (family) {
+      res.status(204).send("Family Deleted: " + family).end();
+      next();
+    } else {
+      res.status(404).end();
+      next();
+    }
+
   } catch (error) {
     return next(error.message);
   }

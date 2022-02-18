@@ -1,5 +1,5 @@
 ## Features ##
-- ApiRest Service
+- APIRest Service
 - Cors Integration
 - Upload Images
 - JWT Tokens
@@ -20,7 +20,7 @@
         "email": "my_email",
         "password": "my_password",
         "isActive": true, # Either your login request will be rejected
-        "acess_type": "admin" # So we get all privilages at once let set it to admin
+        "access_type": "admin" # So we get all privilages at once let set it to admin
     }
 ```
 - Now we will be able to Login into the Admin Panel and update our Profile information

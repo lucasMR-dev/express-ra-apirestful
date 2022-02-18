@@ -106,8 +106,10 @@ router.get("/:id", async (req, res, next) => {
 // Post Brand (Closed Route)
 router.post("", upload.single("logo"), jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   const uploading = req.file;
-  const { name, partnerStatus, active } = req.body;
-  const categories = JSON.parse(req.body.categories);
+  let { name, partnerStatus, active, categories } = req.body;
+  if (typeof categories == "object") {
+    categories = JSON.parse(req.body.categories);
+  }
   // Check FormData image is provided if not update parameters passed only
   if (uploading) {
     const logo = config.DEPLOY_URL + "/" + uploading.path;
@@ -119,10 +121,10 @@ router.post("", upload.single("logo"), jwt({ secret: config.JWT_SECRET }), async
       categories,
     });
     try {
-      const newBrand = await brand.save();
-      res.send(newBrand);
-      res.end();
-      next();
+      const newBrand = await brand.save(function (err, success) {
+        err ? res.status(400).send(`${err.name}[${err.code}] - Failed: Duplicate Key "${err.keyValue.name}"`).end() : res.status(201).send(success).end();
+        return next();
+      });
     } catch (error) {
       return next(error.message);
     }
@@ -134,10 +136,10 @@ router.post("", upload.single("logo"), jwt({ secret: config.JWT_SECRET }), async
       categories,
     });
     try {
-      const newBrand = await brand.save();
-      res.send(newBrand);
-      res.end();
-      next();
+      const newBrand = await brand.save(function (err, success) {
+        err ? res.status(400).send(`${err.name}[${err.code}]`).end() : res.status(201).send(success).end();
+        return next();
+      });
     } catch (err) {
       return next(err.message);
     }
@@ -188,9 +190,13 @@ router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next)
       { _id: req.params.id },
       { runValidators: true }
     );
-    res.send("Brand Deleted: " + brand);
-    res.end();
-    next();
+    if (brand) {
+      res.status(204).send("Brand Deleted: " + brand).end();
+      next();
+    } else {
+      res.status(404).end();
+      next();
+    }
   } catch (error) {
     return next(error.message);
   }

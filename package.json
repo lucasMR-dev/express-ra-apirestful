@@ -2,11 +2,11 @@
   "name": "express-apirest",
   "version": "1.0.0",
   "description": "Express Based Apirest Backend w/ MongoDB",
-  "main": "ApiService/server.js",
+  "main": "Api/server.js",
   "scripts": {
-    "start": "NODE_ENV=production node ApiService/server.js",
-    "dev": "NODE_ENV=development nodemon ApiService/server.js",
-    "test": "NODE_ENV=test jest --no-cache  --detectOpenHandles --runInBand --forceExit"
+    "start": "NODE_ENV=production node Api/server.js",
+    "dev": "NODE_ENV=development nodemon Api/server.js",
+    "test": "NODE_ENV=test jest --forceExit"
   },
   "author": "Lucas Mardones Rivera <l.mardones91@gmail.com>",
   "license": "ISC",

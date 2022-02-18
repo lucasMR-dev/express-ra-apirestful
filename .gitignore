@@ -2,7 +2,7 @@
 /node_modules
 
 # config file
-ApiService/config.js
+Api/config.js
 
 # static files
 /Public

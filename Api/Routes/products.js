@@ -122,7 +122,10 @@ router.post("", upload.array("pictures", 2), jwt({ secret: config.JWT_SECRET }),
     sale,
     colorAvailable,
   } = req.body;
-  const categories = req.body.categories;
+  let { categories } = req.body;
+  if (typeof categories == "object") {
+    categories = JSON.parse(req.body.categories);
+  }
   const tags = req.body.tags;
   const uploading = req.files;
   let pictures = { small: "", big: "" };
@@ -153,12 +156,13 @@ router.post("", upload.array("pictures", 2), jwt({ secret: config.JWT_SECRET }),
     let brand_id = await Brand.findOne({ _id: brand })
       .then(async function (result) {
         if (result != null) {
-          const newProduct = await product.save();
-          res.send(newProduct);
-          res.next();
+          const newProduct = await product.save(function (err, success) {
+            err ? res.status(400).send(`${err.name}[${err.code}] - Failed: Duplicate Key "${err.keyValue.name}"`).end() : res.status(201).send(success).end();
+            return next();
+          });
         } else {
           res.status(404).send("Make sure to create the brands before the products.");
-          res.next();
+          next();
         }
       })
       .catch(function (err) {
@@ -218,12 +222,10 @@ router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next)
       { runValidators: true }
     );
     if (product) {
-      res.status(204).send("Product Deleted: " + product);
-      res.end();
+      res.status(204).send("Product Deleted: " + product).end();
       next();
     } else {
-      res.status(404);
-      res.end();
+      res.status(404).end()
       next();
     }
   } catch (error) {

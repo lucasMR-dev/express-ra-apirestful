@@ -77,9 +77,10 @@ router.post("", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
     family,
   });
   try {
-    const newCategory = await category.save();
-    res.send(newCategory);
-    res.end();
+    const newCategory = await category.save(function (err, success) {
+      err ? res.status(400).send(`${err.name}[${err.code}]`).end() : res.status(201).send(success).end();
+      return next();
+    });
   } catch (error) {
     return next(error.message);
   }
@@ -108,9 +109,14 @@ router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next)
       { _id: req.params.id },
       { runValidators: true }
     );
-    res.send("Category Deleted: " + category);
-    res.end();
-    next();
+    if (category) {
+      res.status(204).send("Category Deleted: " + category).end();
+      next();
+    }
+    else {
+      res.status(404).end();
+      next();
+    }
   } catch (error) {
     return next(error.message);
   }
