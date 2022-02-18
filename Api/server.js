@@ -81,3 +81,5 @@ const db = mongoose.connection;
 db.on("error", (err) => console.log(err));
 
 db.once("open", () => console.log(`Server started on port: ${config.PORT}`));
+
+module.exports = { server };

@@ -17,21 +17,27 @@ router.get("", async (req, res, next) => {
   try {
     // Query Params
     const { filter, sort, range } = req.query;
-    const data = await queryFilters.usersFiltersAndSort(filter, sort, range);
-    const countFilter = Object.keys(data.users).length;
-    const count = await User.countDocuments();
-    res.range({
-      first: req.range.first,
-      last: req.range.last,
-      length: req.range.lenght,
-    });
-    if (data.status === "filtered") {
-      res.header("X-Total-Count", countFilter);
+    if (filter && sort && range) {
+      const data = await queryFilters.usersFiltersAndSort(filter, sort, range);
+      const countFilter = Object.keys(data.users).length;
+      const count = await User.countDocuments();
+      res.range({
+        first: req.range.first,
+        last: req.range.last,
+        length: req.range.lenght,
+      });
+      if (data.status === "filtered") {
+        res.header("X-Total-Count", countFilter);
+      } else {
+        res.header("X-Total-Count", count);
+      }
+      res.json(data.users.slice(req.range.first, req.range.last + 1));
+      next();
     } else {
-      res.header("X-Total-Count", count);
+      const data = await User.find({});
+      res.status(200).send(data).end();
+      next();
     }
-    res.json(data.users.slice(req.range.first, req.range.last + 1));
-    next();
   } catch (err) {
     return next(err.message);
   }
