@@ -1,0 +1,9 @@
+
+# node modules
+/node_modules
+
+# config file
+Api/config.js
+
+# static files
+/Public

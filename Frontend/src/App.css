@@ -1,0 +1,80 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dashboard-wrapper {
+  width: 100%;
+}
+
+.top-line {
+  width: 100%;
+  padding-top: 20px;
+  padding-right: 20px;
+}
+
+.middle-line {
+  width: 100%;
+  padding-left: 50px;
+  margin-right: -15px;
+  margin-left: -15px;
+  padding-top: 25px;
+  display: flex;
+}
+
+.metrics-card {
+  margin-left: 20px;
+  padding-right: 15px;
+  display: flex;
+}
+
+.metrics-fonts {
+  font-size: small;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
+.metrics-link {
+  text-decoration: none;
+}
+
+.metrics-link a:visited {
+  text-decoration: none;
+}
+
+.RaLayout-contentWithSidebar-3 {
+  background-color: white;
+}
