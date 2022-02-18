@@ -1,8 +1,8 @@
 const request = require("supertest");
 const { server } = require("../Api/server");
+const config = require("../Api/config");
 
 let token;
-
 let family;
 let category;
 let brand;
@@ -11,8 +11,8 @@ beforeAll((done) => {
     request(server)
         .post('/v1/auth/login')
         .send({
-            username: "admin",
-            password: "admin123",
+            username: config.JEST_USER,
+            password: config.JEST_PASS
         })
         .end((err, response) => {
             token = response.body.token;

@@ -5,5 +5,8 @@ module.exports = {
     MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/apirest',
     JWT_SECRET: process.env.JWT_SECRET || 'secret_token',
     // Deployment
-    DEPLOY_URL: process.env.URL || 'http://localhost:3000'
+    DEPLOY_URL: process.env.URL || 'http://localhost:3000',
+    // Jest
+    JEST_USER: 'your_user',
+    JEST_PASS: 'your_pass'
 }
