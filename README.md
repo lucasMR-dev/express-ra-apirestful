@@ -26,7 +26,7 @@
 - Now we will be able to Login into the Admin Panel and update our Profile information
 
 ### Unit Tests ###
-- Run `npm run jest` on Development mode if you pass all test you're good to go
+- Run `npm run test` on Development mode if you pass all test you're good to go
 
 ### Development Server ###
 
