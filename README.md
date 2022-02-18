@@ -1,40 +1,42 @@
-## Features ##
-- APIRest Service
-- Cors Integration
-- Upload Images
-- JWT Tokens
-- More...
+# All in one Stack #
 
-## Installation ##
+- React-Admin Frontend
+- ExpressJS APIRest
+- Mongo-Express for Database Web Handle
+- Dockerized all in one for easy Startup Proyects!
 
-### First Steps ###
+## What is this Repo all about? ##
+This is a simple MERN Stack application, Each service is isolated and comunicate each other throughth a specific Docker network.
+You can change the Frontend and Backend to your desire, making more easy to setup your own app!
 
-- cp copy.config.js ApiService/config.js
 
-- Install Dependencies with `npm install`.
+## How to setup ##
 
-- Lets create a user send a `POST` request to http://localhost:3000/v1/auth/register use format `JSON` like this:
+### Build the app images ###
 ```
-    {
-        "username": "my_username",
-        "email": "my_email",
-        "password": "my_password",
-        "isActive": true, # Either your login request will be rejected
-        "access_type": "admin" # So we get all privilages at once let set it to admin
-    }
+    * Before Please Checkout Instructions inside Each Folder
+
+    Commands:
+    - cd path/to/the/folder/Frontend > make 
+    - cd path/to/the/folder/Backend > make
 ```
-- Now we will be able to Login into the Admin Panel and update our Profile information
 
-### Unit Tests ###
-- Run `npm run test` on Development mode if you pass all test you're good to go
+### Setup Config files ###
+```
+    Remember to change the URL and PORT on thoose files before deployment:
+    - path/to/the/folder/Backend/Api/config.js
+    - path/to/the/folder/Frontend/src/Api/config.js
+    
+```
 
-### Development Server ###
-
-- Use command `npm run dev` this allow nodemon to restart automatically our server when a file change.
-
-### Production Server Deploy ###
-
-- `npm install -g pm2`
-- cd path/to/folder/app
-- `pm2 start server.js`
-- `env PATH=$PATH:/usr/local/bin pm2 startup -u 'usuario root'`
+### Docker up! ###
+```
+    Start:
+    - docker-compose up -d
+    Close:
+    - docker-compose down
+```
+### Links ###
+1. [Admin Panel(Frontend)](http://localhost:3000)
+2. [Apirest(Backend)](http://localhost:5000/v1)
+3. [Backend(Mongo Express Page)](http://localhost:8081)    
