@@ -72,10 +72,43 @@ const dataProvider = {
 
   // Update By Id
   update: async (resource, params) => {
-    var path = resource;
-    var optionHeader = new Headers({ Accept: "*/*" });
+    let path = resource;
+    let optionHeader = new Headers({ Accept: "*/*" });
     optionHeader.delete("content-type");
-    if (path === "brands") {
+    if (path === "products") {
+      const formData = new FormData();
+      if (params.data.new_pictures) {
+        let small = params.data.new_pictures[0];
+        let big = params.data.new_pictures[1];
+        if (small.rawFile.size > 0) {
+          formData.append("pictures", small.rawFile);
+        }
+        if (big.rawFile.size > 0 ) {
+          formData.append("pictures", big.rawFile);
+        }
+      }
+      formData.append("sku", params.data.sku);
+      formData.append("name", params.data.name);
+      formData.append("brand", params.data.brand);
+      formData.append("price", params.data.price);
+      formData.append("salePrice", params.data.salePrice);
+      formData.append("discount", params.data.discount);
+      formData.append("newPro", params.data.newPro);
+      formData.append("sale", params.data.sale);
+      formData.append("stock", params.data.stock);
+      formData.append("shortDetails", params.data.shortDetails);
+      formData.append("description", params.data.description);
+      formData.append("tags", JSON.stringify(params.data.tags));
+      formData.append("colorAvailable", params.data.colorAvailable);
+      formData.append("categories", JSON.stringify(params.data.categories));
+
+      return httpClient(`${apiUrl}/${resource}/${params.id}`, {
+        method: "PATCH",
+        body: formData,
+        headers: optionHeader,
+      }).then(({ json }) => ({ data: json }));
+    }
+    else if (path === "brands") {
       const formData = new FormData();
       if (params.data.newlogo) {
         const file = params.data.newlogo;
@@ -136,8 +169,8 @@ const dataProvider = {
 
   // Post Single
   create: async (resource, params) => {
-    var path = resource;
-    var optionHeader = new Headers({ Accept: "*/*" });
+    let path = resource;
+    let optionHeader = new Headers({ Accept: "*/*" });
     optionHeader.delete("content-type");
     if (path === "brands") {
       const file = params.data.logo;
@@ -156,8 +189,8 @@ const dataProvider = {
         headers: optionHeader,
       }).then(({ json }) => ({ data: json }));
     } else if (path === "products") {
-      var small = params.data.pictures[0];
-      var big = params.data.pictures[1];
+      let small = params.data.pictures[0];
+      let big = params.data.pictures[1];
       const formData = new FormData();
       // Fill the form
       formData.append("sku", params.data.sku);
