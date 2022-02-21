@@ -181,9 +181,13 @@ router.patch("/:id", upload.array("pictures", 2), jwt({ secret: config.JWT_SECRE
   const uploading = req.files;
   // Check FormData images are provided if not update parameters passed only
   if (uploading) {
-    const small = config.DEPLOY_URL + "/" + uploading[0].path;
-    const big = config.DEPLOY_URL + "/" + uploading[1].path;
-    const pictures = { small: small, big: big };
+    let pictures = {};
+    if(uploading[0]){
+      pictures.small = config.DEPLOY_URL + "/" + uploading[0].path;
+    }
+    if(uploading[1]) {
+      pictures.big = config.DEPLOY_URL + "/" + uploading[1].path;
+    }
     const data = { body, categories, tags, pictures };
     try {
       const product = await Product.findOneAndUpdate(

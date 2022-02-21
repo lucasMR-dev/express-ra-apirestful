@@ -127,7 +127,25 @@ export const ProductEdit = (props) => {
         <NumberInput source="discount" />
         <BooleanInput source="newPro" />
         <BooleanInput source="sale" />
+        <RichTextInput source="shortDetails" />
         <RichTextInput source="description" />
+        <div className="row">
+          <ImageField source="pictures[0].small" label="First" alt="small" />
+          <ImageField source="pictures[0].big" label="Last" alt="big" />
+        </div>
+        <ImageInput
+        source="new_pictures"
+        label="Pictures"
+        accept="image/*"
+        multiple={true}
+        >
+          <ImageField source="src" title="title" />
+        </ImageInput>
+        <ArrayInput source="tags">
+          <SimpleFormIterator>
+            <TextInput />
+          </SimpleFormIterator>
+        </ArrayInput>
         <TextInput source="colorAvailable" />
       </SimpleForm>
     </Edit>
