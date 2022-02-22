@@ -76,17 +76,7 @@ const dataProvider = {
     let optionHeader = new Headers({ Accept: "*/*" });
     optionHeader.delete("content-type");
     if (path === "products") {
-      const formData = new FormData();
-      if (params.data.new_pictures) {
-        let small = params.data.new_pictures[0];
-        let big = params.data.new_pictures[1];
-        if (small.rawFile.size > 0) {
-          formData.append("pictures", small.rawFile);
-        }
-        if (big.rawFile.size > 0 ) {
-          formData.append("pictures", big.rawFile);
-        }
-      }
+      const formData = new FormData();      
       formData.append("sku", params.data.sku);
       formData.append("name", params.data.name);
       formData.append("brand", params.data.brand);
@@ -101,6 +91,17 @@ const dataProvider = {
       formData.append("tags", JSON.stringify(params.data.tags));
       formData.append("colorAvailable", params.data.colorAvailable);
       formData.append("categories", JSON.stringify(params.data.categories));
+
+      if (params.data.new_pictures) {
+        let small = params.data.new_pictures[0];
+        let big = params.data.new_pictures[1];
+        if (small) {
+          formData.append("pictures", small.rawFile);
+        }
+        if (big) {
+          formData.append("pictures", big.rawFile);
+        }
+      }
 
       return httpClient(`${apiUrl}/${resource}/${params.id}`, {
         method: "PATCH",
