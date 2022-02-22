@@ -175,42 +175,44 @@ router.post("", upload.array("pictures", 2), jwt({ secret: config.JWT_SECRET }),
 
 // Update Product (Closed Route)
 router.patch("/:id", upload.array("pictures", 2), jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
-  const body = req.body;
-  const categories = JSON.parse(body.categories);
-  const tags = JSON.parse(body.tags);
+  const productS = await Product.findById({ _id: req.params.id });
+  let body = req.body;
+  body.categories = JSON.parse(body.categories);
+  body.tags = JSON.parse(body.tags);
   const uploading = req.files;
+  let pictures = {};
   // Check FormData images are provided if not update parameters passed only
   if (uploading) {
-    let pictures = {};
+    let small;
+    let big;
     if(uploading[0]){
-      pictures.small = config.DEPLOY_URL + "/" + uploading[0].path;
+      small = config.DEPLOY_URL + "/" + uploading[0].path;
+      pictures = { small: small, big: productS.pictures[0].big };
     }
     if(uploading[1]) {
-      pictures.big = config.DEPLOY_URL + "/" + uploading[1].path;
+      big = config.DEPLOY_URL + "/" + uploading[1].path;
+      pictures = { small: small, big: big };
     }
-    const data = { body, categories, tags, pictures };
+    body.pictures = pictures;
     try {
       const product = await Product.findOneAndUpdate(
         { _id: req.params.id },
-        data,
+        body,
         { new: true, runValidators: true }
       );
-      res.send(product);
-      res.end();
+      res.send(product).end();
       next();
     } catch (error) {
       return next(error.message);
     }
   } else {
-    const data = { body, categories, tags };
     try {
       const product = await Product.findOneAndUpdate(
         { _id: req.params.id },
-        data,
+        body,
         { new: true, runValidators: true }
       );
-      res.send(product);
-      res.end();
+      res.send(product).end();
       next();
     } catch (error) {
       return next(error.message);
