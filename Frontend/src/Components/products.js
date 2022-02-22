@@ -29,11 +29,21 @@ import {
   SelectInput,
   useQuery,
   Loading,
-  Error
+  Error,
+  TabbedForm,
+  FormTab,
 } from "react-admin";
+import { makeStyles } from '@material-ui/core/styles';
 import RichTextInput from "ra-input-rich-text";
 import { useMediaQuery, Avatar, Box } from "@material-ui/core";
 import Aside from '../Components/products/aside';
+
+const customStyles = makeStyles(theme => ({
+  image: {
+    width: 200,
+    height: 200,
+  }
+}));
 
 const ProductFilter = (props) => (
   <Filter {...props}>
@@ -44,6 +54,7 @@ const ProductFilter = (props) => (
 );
 
 export const ProductList = ({ permissions, ...props }) => {
+  const imageFieldClasses = customStyles();
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   return (
     <List {...props} filters={<ProductFilter />}>
@@ -74,7 +85,7 @@ export const ProductList = ({ permissions, ...props }) => {
               options={{ style: "currency", currency: "CPL" }}
             />
             <ChipField source="colorAvailable" label="Colors" />
-            <ImageField source="pictures[0].small" label="Pictures" />
+            <ImageField classes={imageFieldClasses} source="pictures[0].small" label="Pictures" />
             {permissions === "admin" ? <EditButton /> : null}
             {permissions === "admin" ? <DeleteButton /> : null}
           </Datagrid>
@@ -96,6 +107,7 @@ export const ProductShow = (props) => (
 );
 
 export const ProductEdit = (props) => {
+  const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const payload = {
     filter: {},
     pagination: { page: 1, perPage: 10 },
@@ -114,40 +126,89 @@ export const ProductEdit = (props) => {
 
   return (
     <Edit {...props}>
-      <SimpleForm>
-        <TextInput disabled source="id" />
-        <TextInput disabled source="sku" />
-        <CheckboxGroupInput
-          source="categories"
-          choices={data}
-          optionValue="id"
-        />
-        <NumberInput source="price" />
-        <NumberInput source="salePrice" />
-        <NumberInput source="discount" />
-        <BooleanInput source="newPro" />
-        <BooleanInput source="sale" />
-        <RichTextInput source="shortDetails" />
-        <RichTextInput source="description" />
-        <div className="row">
-          <ImageField source="pictures[0].small" label="First" alt="small" />
-          <ImageField source="pictures[0].big" label="Last" alt="big" />
-        </div>
-        <ImageInput
-        source="new_pictures"
-        label="Pictures"
-        accept="image/*"
-        multiple={true}
-        >
-          <ImageField source="src" title="title" />
-        </ImageInput>
-        <ArrayInput source="tags">
-          <SimpleFormIterator>
-            <TextInput />
-          </SimpleFormIterator>
-        </ArrayInput>
-        <TextInput source="colorAvailable" />
-      </SimpleForm>
+      {isSmall ? (
+        <SimpleForm>
+          <TextInput disabled source="id" />
+          <TextInput disabled source="sku" />
+          <CheckboxGroupInput
+            source="categories"
+            choices={data}
+            optionValue="id"
+          />
+          <BooleanInput source="newPro" />
+          <BooleanInput source="sale" />
+          <NumberInput source="price" />
+          <NumberInput source="salePrice" />
+          <NumberInput source="discount" />
+          <NumberInput source="stock" />
+          <RichTextInput source="shortDetails" />
+          <RichTextInput source="description" />
+          <div className="row">
+            <ImageField source="pictures[0].small" label="First" alt="small" />
+            <ImageField source="pictures[0].big" label="Last" alt="big" />
+          </div>
+          <ImageInput
+            source="new_pictures"
+            label="Pictures"
+            accept="image/*"
+            multiple={true}
+          >
+            <ImageField source="src" title="title" />
+          </ImageInput>
+          <ArrayInput source="tags">
+            <SimpleFormIterator>
+              <TextInput />
+            </SimpleFormIterator>
+          </ArrayInput>
+          <TextInput source="colorAvailable" />
+        </SimpleForm>
+      ) : (
+        <TabbedForm>
+          <FormTab label="Info">
+            <TextInput disabled source="id" />
+            <TextInput disabled source="sku" />
+            <CheckboxGroupInput
+              source="categories"
+              choices={data}
+              optionValue="id"
+            />
+          </FormTab>
+          <FormTab label="Inventory">
+            <BooleanInput source="newPro" />
+            <BooleanInput source="sale" />
+            <NumberInput source="price" />
+            <NumberInput source="salePrice" />
+            <NumberInput source="discount" />
+            <NumberInput source="stock" />
+          </FormTab>
+          <FormTab label="Text">
+            <RichTextInput source="shortDetails" />
+            <RichTextInput source="description" />
+          </FormTab>
+          <FormTab label="Images">
+            <div className="row">
+              <ImageField source="pictures[0].small" label="First" alt="small" />
+              <ImageField source="pictures[0].big" label="Last" alt="big" />
+            </div>
+            <ImageInput
+              source="new_pictures"
+              label="Pictures"
+              accept="image/*"
+              multiple={true}
+            >
+              <ImageField source="src" title="title" />
+            </ImageInput>
+          </FormTab>
+          <FormTab label="Others">
+            <ArrayInput source="tags">
+              <SimpleFormIterator>
+                <TextInput />
+              </SimpleFormIterator>
+            </ArrayInput>
+            <TextInput source="colorAvailable" />
+          </FormTab>
+        </TabbedForm>
+      )}
     </Edit>
   )
 };
