@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import * as React from "react";
 import {
   Show,
@@ -32,6 +33,7 @@ import {
   Error,
   TabbedForm,
   FormTab,
+  ReferenceInput
 } from "react-admin";
 import { makeStyles } from '@material-ui/core/styles';
 import RichTextInput from "ra-input-rich-text";
@@ -42,7 +44,8 @@ const customStyles = makeStyles(theme => ({
   image: {
     width: 200,
     height: 200,
-  }
+  },
+  inlineBlock: { display: 'inline-flex', marginRight: '1rem' },
 }));
 
 const ProductFilter = (props) => (
@@ -70,7 +73,7 @@ export const ProductList = ({ permissions, ...props }) => {
       ) : (
         <Box display="flex">
           <Aside />
-          <Datagrid style={{ width: "auto" }}>
+          <Datagrid expand={ProductShow} style={{ width: "auto" }}>
             <TextField source="name" />
             <RichTextField source="shortDetails" />
             <TextField source="stock" />
@@ -95,19 +98,36 @@ export const ProductList = ({ permissions, ...props }) => {
   );
 };
 
-export const ProductShow = (props) => (
-  <Show {...props}>
-    <SimpleShowLayout>
-      <TextField source="name" />
-      <TextField source="brand.name" label="Brand" />
-      <ImageField source="pictures[0].small" label="Pictures" />
-      <ChipField source="colorAvailable" />
-    </SimpleShowLayout>
-  </Show>
-);
+export const ProductShow = (props) => {
+  const classes = customStyles();
+  const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  return (
+    <Show {...props}>
+      { isSmall ? (
+        <SimpleShowLayout>
+          <TextField source="name" />
+          <TextField source="brand.name" label="Brand" />
+          <ImageField source="pictures[0].small" label="Pictures" />
+          <ChipField source="colorAvailable" />
+        </SimpleShowLayout>
+      ) : (
+        <SimpleShowLayout>
+          <TextField source="name" />
+          <TextField source="brand.name" label="Brand" />
+          <div className={classes.inlineBlock}>
+            <ImageField source="pictures[0].small" label="Pictures" />
+            <ImageField source="pictures[0].big" label="" />
+          </div>
+          <RichTextField source="description" />
+        </SimpleShowLayout>
+      )}
+    </Show>
+  )
+};
 
 export const ProductEdit = (props) => {
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const classes = customStyles();
   const payload = {
     filter: {},
     pagination: { page: 1, perPage: 10 },
@@ -143,7 +163,7 @@ export const ProductEdit = (props) => {
           <NumberInput source="stock" />
           <RichTextInput source="shortDetails" />
           <RichTextInput source="description" />
-          <div className="row">
+          <div className={classes.inlineBlock}>
             <ImageField source="pictures[0].small" label="First" alt="small" />
             <ImageField source="pictures[0].big" label="Last" alt="big" />
           </div>
@@ -167,13 +187,20 @@ export const ProductEdit = (props) => {
           <FormTab label="Info">
             <TextInput disabled source="id" />
             <TextInput disabled source="sku" />
+            <ReferenceInput
+              source="brand"
+              reference="brands"
+              link={false}
+            >
+              <SelectInput optionText="name" optionValue="id" />
+            </ReferenceInput>
             <CheckboxGroupInput
               source="categories"
               choices={data}
               optionValue="id"
             />
           </FormTab>
-          <FormTab label="Inventory">
+          <FormTab label="Inventory" path="/inventory">
             <BooleanInput source="newPro" />
             <BooleanInput source="sale" />
             <NumberInput source="price" />
@@ -181,11 +208,11 @@ export const ProductEdit = (props) => {
             <NumberInput source="discount" />
             <NumberInput source="stock" />
           </FormTab>
-          <FormTab label="Text">
+          <FormTab label="Text" path="/product_info">
             <RichTextInput source="shortDetails" />
             <RichTextInput source="description" />
           </FormTab>
-          <FormTab label="Images">
+          <FormTab label="Images" path="/product_pictures">
             <div className="row">
               <ImageField source="pictures[0].small" label="First" alt="small" />
               <ImageField source="pictures[0].big" label="Last" alt="big" />
@@ -199,7 +226,7 @@ export const ProductEdit = (props) => {
               <ImageField source="src" title="title" />
             </ImageInput>
           </FormTab>
-          <FormTab label="Others">
+          <FormTab label="Others" path="/misc">
             <ArrayInput source="tags">
               <SimpleFormIterator>
                 <TextInput />
