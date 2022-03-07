@@ -76,7 +76,7 @@ const dataProvider = {
     let optionHeader = new Headers({ Accept: "*/*" });
     optionHeader.delete("content-type");
     if (path === "products") {
-      const formData = new FormData();      
+      const formData = new FormData();
       formData.append("sku", params.data.sku);
       formData.append("name", params.data.name);
       formData.append("brand", params.data.brand);
@@ -207,9 +207,35 @@ const dataProvider = {
       formData.append("description", params.data.description);
       formData.append("tags", JSON.stringify(params.data.tags));
       formData.append("colorAvailable", params.data.colorAvailable);
-      formData.append("categories", JSON.stringify(params.data.categories));
+      formData.append("categories", params.data.categories);
       formData.append("pictures", small.rawFile);
       formData.append("pictures", big.rawFile);
+
+      return httpClient(`${apiUrl}/${resource}`, {
+        method: "POST",
+        body: formData,
+        headers: optionHeader,
+      }).then(({ json }) => ({ data: json }));
+    }
+    else if (path === "employees") {
+      const file = params.data.picture;
+      const formData = new FormData();
+
+      // Fill the form
+      formData.append("firstname", params.data.firstname);
+      formData.append("lastname", params.data.lastname);
+      formData.append("birthday", params.data.birthday);
+      formData.append("phone", params.data.phone);
+      formData.append("picture", file.rawFile);
+      formData.append("username", params.data.username);
+      formData.append("email", params.data.email);
+      formData.append("access_type", params.data.access_type);
+      formData.append("isActive", params.data.isActive);
+      formData.append("job_name", params.data.job_name);
+      formData.append("hire_date", params.data.hire_date);
+      formData.append("salary", params.data.salary);
+      formData.append("position", params.data.position);
+      formData.append("department", params.data.department);
 
       return httpClient(`${apiUrl}/${resource}`, {
         method: "POST",

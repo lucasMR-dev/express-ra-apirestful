@@ -89,7 +89,7 @@ export const LinkToRelatedProducts = ({ record }) => {
   ) : null;
 };
 
-export const CategoryGrid = ({ permissions, ...props }) => {
+export const BrandGrid = ({ permissions, ...props }) => {
   const classes = useStyles(props);
   const { data, ids } = useListContext();
   return ids ? (
@@ -133,7 +133,7 @@ export const BrandList = ({ permissions, ...props }) => {
           linkType={permissions === "admin" ? "edit" : "show"}
         />
       ) : (
-        <CategoryGrid permissions={permissions} />
+        <BrandGrid permissions={permissions} />
       )}
     </List>
   );

@@ -25,17 +25,10 @@ router.post('/register', (req, res, next) => {
             user.password = hash;
             //Save user
             try {
-                const newUser = await user.save().then( async () => {
-                    const profile = new Profile({
-                        firstname: user.username,
-                        lastname: '',
-                        birthday: '',
-                        user: newUser._id
-                    });
-                    const newProfile = await profile.save();
-                    res.send(newProfile).end();
+                await user.save().then(() => {
+                    res.send(user).end();
                     next();
-                }).catch ( () => {
+                }).catch(() => {
                     res.status(403).json({ "Error": { "message": "Not allowed" } }).end();
                     next();
                 });
@@ -49,9 +42,9 @@ router.post('/register', (req, res, next) => {
 
 // Login
 router.post('/login', async (req, res, next) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     try {
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (user) {
             const active = user.isActive;
             // Match password

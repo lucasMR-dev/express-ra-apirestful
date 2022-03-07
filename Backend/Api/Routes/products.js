@@ -50,7 +50,15 @@ router.get("", async (req, res, next) => {
   try {
     // Query Params
     const { filter, sort, range } = req.query;
-    if (filter && sort && range) {
+    let checkFilter = Object.keys(JSON.parse(filter)).toString();
+    if (checkFilter.length <= 2 && !sort && !range) {
+      let filtro = JSON.parse(filter);
+      let id = filtro.id.toString();
+      const data = await Product.find({_id: id});
+      res.status(200).send(data).end();
+      next();
+    }
+    else if (filter && sort && range) {
       const data = await queryFilters.productsFiltersAndSort(filter, sort, range);
       const countFilter = Object.keys(data.products).length;
       const count = await Product.countDocuments();
@@ -82,7 +90,7 @@ router.get("", async (req, res, next) => {
 // Get Product by Id (Open Route)
 router.get("/:id", async (req, res, next) => {
   try {
-    const product = await Product.findById({ _id: req.params.id })
+    const product = await Product.findById({ _id: req.params.id });
     const code = "product";
     const name = product.name;
     const int = 0;
@@ -122,10 +130,7 @@ router.post("", upload.array("pictures", 2), jwt({ secret: config.JWT_SECRET }),
     sale,
     colorAvailable,
   } = req.body;
-  let { categories } = req.body;
-  if (typeof categories == "object") {
-    categories = JSON.parse(req.body.categories);
-  }
+  let categories = req.body.categories.split(",");
   const tags = req.body.tags;
   const uploading = req.files;
   let pictures = { small: "", big: "" };
@@ -157,7 +162,7 @@ router.post("", upload.array("pictures", 2), jwt({ secret: config.JWT_SECRET }),
       .then(async function (result) {
         if (result != null) {
           const newProduct = await product.save(function (err, success) {
-            err ? res.status(400).send(`${err.name}[${err.code}] - Failed: Duplicate Key "${err.keyValue.name}"`).end() : res.status(201).send(success).end();
+            err ? res.status(400).send(err).end() : res.status(201).send(success).end();
             return next();
           });
         } else {
@@ -185,13 +190,14 @@ router.patch("/:id", upload.array("pictures", 2), jwt({ secret: config.JWT_SECRE
   if (uploading) {
     let small;
     let big;
+    pictures = { small: productS.pictures[0].small, big: productS.pictures[0].big };
     if(uploading[0]){
       small = config.DEPLOY_URL + "/" + uploading[0].path;
-      pictures = { small: small, big: productS.pictures[0].big };
+      pictures.small = small;
     }
     if(uploading[1]) {
       big = config.DEPLOY_URL + "/" + uploading[1].path;
-      pictures = { small: small, big: big };
+      pictures.big = big;
     }
     body.pictures = pictures;
     try {

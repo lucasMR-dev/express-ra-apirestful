@@ -3,10 +3,6 @@ const timestamp = require('mongoose-timestamp');
 const normalize = require('normalize-mongoose');
 
 const EmployeeSchema = new mongoose.Schema({
-    department: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Department',
-    },
     job_name: {
         type: String,
         required: true
@@ -15,16 +11,46 @@ const EmployeeSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    position: {
+        type: String,
+        default: 'worker'
+    },
     salary: {
         type: Number,
         required: true
     },
+    department: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Department'
+    }, 
+    profile: {
+        firstname: {
+            type: String,
+            trim: true
+        },
+        lastname: {
+            type: String,
+            trim: true
+        },
+        birthday: {
+            type: String
+        },
+        phone: {
+            type: String,
+            default: ''
+        },
+        path: {
+            type: String,
+            default: '',
+            trim: true
+        }
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'User',
         required: true,
         unique: true
-    }
+    },
 });
 
 EmployeeSchema.plugin(timestamp);
