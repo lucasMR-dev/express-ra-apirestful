@@ -26,6 +26,7 @@ import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { stringify } from "query-string";
 import UserIcon from "@material-ui/icons/Group";
+import { usePermissions } from 'react-admin';
 
 const useStyles = makeStyles({
     icon: { paddingRight: "0.5em" },
@@ -65,19 +66,19 @@ export const LinkToRelatedEmployee = ({ record }) => {
     ) : null;
 };
 
-export const DepartmentList = ({ permissions, ...props }) => {
+export const DepartmentList = ({ ...props }) => {
     const imageFieldClasses = useStyles();
     const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+    const { loaded, permissions } = usePermissions();
     return (
         <List
             {...props}
             filters={<DepartmentFilter />}
-            bulkActionButtons={permissions === "admin" ? true : false}
         >
             {isSmall ? (
                 <SimpleList
                     primaryText={(record) => record.name}
-                    linkType={permissions === "admin" ? "edit" : "show"}
+                    linkType={permissions.includes('manager') >=3 ? "edit" : "show"}
                 />
             ) : (
                 <Datagrid>
@@ -95,8 +96,8 @@ export const DepartmentList = ({ permissions, ...props }) => {
                             <ImageField classes={imageFieldClasses} source="profile.path" title=""/>
                         </SingleFieldList>
                     </ReferenceArrayField>
-                    {permissions === "admin" ? <EditButton /> : null}
-                    {permissions === "admin" ? <DeleteButton /> : null}
+                    { loaded && permissions.includes('manager') ? <EditButton /> : null}
+                    { loaded && permissions.includes('manager') ? <DeleteButton /> : null}
                 </Datagrid>
             )}
         </List>

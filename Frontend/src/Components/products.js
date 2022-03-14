@@ -98,7 +98,7 @@ export const ProductList = ({ permissions, ...props }) => {
   );
 };
 
-export const ProductShow = (props) => {
+export const ProductShow = ({ permissions, ...props }) => {
   const classes = customStyles();
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   return (
@@ -125,7 +125,7 @@ export const ProductShow = (props) => {
   )
 };
 
-export const ProductEdit = (props) => {
+export const ProductEdit = ({ permissions, ...props }) => {
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const classes = customStyles();
   const payload = {
@@ -240,7 +240,7 @@ export const ProductEdit = (props) => {
   )
 };
 
-export const ProductCreate = (props) => (
+export const ProductCreate = ({ permissions, ...props }) => (
   <Create {...props}>
     <SimpleForm>
       <TextInput source="name" required />

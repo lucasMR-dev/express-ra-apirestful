@@ -21,7 +21,7 @@ import BrandsIcon from '@material-ui/icons/Business';
 import FamiliesIcon from '@material-ui/icons/AccountTree';
 import DepartmentsIcon from '@material-ui/icons/Apartment';
 import EmployeesIcon from '@material-ui/icons/Group';
-import SalesIcon from '@material-ui/icons/AttachMoney';
+//import SalesIcon from '@material-ui/icons/AttachMoney';
 
 
 const App = () => (
@@ -33,21 +33,18 @@ const App = () => (
       authProvider={authProvider}
       catchAll={NotFound}
     >
-
       {permissions => [
         // Restrict access to the edit and remove views to admin only
         <Resource name="profile" edit={ProfileEdit} />,
-        <Resource name="products" list={ProductList} create={permissions === 'admin' ? ProductCreate : null} edit={permissions === 'admin' ? ProductEdit : null} show={ProductShow} icon={ProductsIcon} />,
-        <Resource name="categories" list={CategoryList} create={permissions === 'admin' ? CategoryCreate : null} edit={permissions === 'admin' ? CategoryEdit : null} show={CategoryShow} icon={CategoriesIcon} />,
-        <Resource name="brands" list={BrandList} create={permissions === 'admin' ? BrandCreate : null} edit={permissions === 'admin' ? BrandEdit : null} show={BrandShow} icon={BrandsIcon} />,
-        <Resource name="families" list={FamilyList} create={permissions === 'admin' ? FamilyCreate : null} edit={permissions === 'admin' ? FamilyEdit : null} show={FamilyShow} icon={FamiliesIcon} />,
-        <Resource name="departments" list={DepartmentList} create={permissions === 'admin' ? DepartmentCreate : null} edit={permissions === 'admin' ? DepartmentEdit : null} show={DepartmentShow} icon={DepartmentsIcon} />,
-        <Resource name="sales" list={EmployeeList} create={permissions === 'admin' ? EmployeeCreate : null} edit={permissions === 'admin' ? EmployeeEdit : null} show={EmployeeShow} icon={SalesIcon} />,
-        <Resource name="employees" list={EmployeeList} create={permissions === 'admin' ? EmployeeCreate : null} edit={permissions === 'admin' ? EmployeeEdit : null} show={EmployeeShow} icon={EmployeesIcon} />,
+        permissions.includes("Warehouse") ? <Resource name="products" list={ProductList} create={ProductCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? ProductEdit : null} show={ProductShow} icon={ProductsIcon} /> : null,
+        permissions.includes("Warehouse") ? <Resource name="categories" list={CategoryList} create={CategoryCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? CategoryEdit : null} show={CategoryShow} icon={CategoriesIcon} /> : null,
+        permissions.includes("Warehouse") ? <Resource name="brands" list={BrandList} create={BrandCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? BrandEdit : null} show={BrandShow} icon={BrandsIcon} /> : null,
+        permissions.includes("Warehouse") ? <Resource name="families" list={FamilyList} create={FamilyCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? FamilyEdit : null} show={FamilyShow} icon={FamiliesIcon} /> : null,
+        /*permissions.includes("Warehouse") ? <Resource name="sales" list={EmployeeList} create={EmployeeCreate} edit={EmployeeEdit} show={EmployeeShow} icon={SalesIcon} /> : null,*/
+        permissions.includes("RRHH") || permissions > 0 ? <Resource name="departments" list={DepartmentList} create={DepartmentCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? DepartmentEdit : null} show={DepartmentShow} icon={DepartmentsIcon} /> : null,
+        permissions.includes("RRHH") || permissions > 0 ? <Resource name="employees" list={EmployeeList} create={EmployeeCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? EmployeeEdit : null} show={EmployeeShow} icon={EmployeesIcon} /> : null,
         // Admin Display Only
-        permissions === 'admin'
-          ? <Resource name="users" list={UserList} create={UserCreate} edit={UserEdit} />
-          : null,
+        permissions > 0 ? <Resource name="users" list={UserList} create={UserCreate} edit={UserEdit} /> : null,
       ]}
 
     </Admin>

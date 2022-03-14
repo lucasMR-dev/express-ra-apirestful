@@ -101,10 +101,10 @@ export const BrandGrid = ({ permissions, ...props }) => {
             <CardContent className={classes.title}></CardContent>
             <CardActions classes={{ spacing: classes.actionSpacer }}>
               <LinkToRelatedProducts record={data[id]} />
-              {permissions === "admin" ? (
+              {permissions.includes('manager') || permissions.includes('supervisor') ? (
                 <EditButton basePath="/brands" record={data[id]} />
               ) : null}
-              {permissions === "admin" ? <DeleteButton /> : null}
+              {permissions.includes('manager') || permissions.includes('supervisor') ? <DeleteButton /> : null}
             </CardActions>
           </Card>
         </Grid>
@@ -130,10 +130,10 @@ export const BrandList = ({ permissions, ...props }) => {
           leftAvatar={(record) => <Avatar src={record.logo} />}
           primaryText={(record) => record.name}
           secondaryText={(record) => record.partnerStatus}
-          linkType={permissions === "admin" ? "edit" : "show"}
+          linkType={permissions.includes('manager') ? "edit" : "show"}
         />
       ) : (
-        <BrandGrid permissions={permissions} />
+        <BrandGrid permissions={permissions.includes('manager') || permissions.includes('supervisor')} />
       )}
     </List>
   );

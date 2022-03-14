@@ -41,6 +41,7 @@ import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { stringify } from "query-string";
 import UserIcon from "@material-ui/icons/Group";
+import { usePermissions } from 'react-admin';
 
 const useStyles = makeStyles({
     root: {
@@ -100,7 +101,7 @@ export const LinkToRelatedDepartment = ({ record }) => {
     ) : null;
 };
 
-export const EmployeeContext = ({ permissions }) => {
+export const EmployeeContext = () => {
     const imageFieldClasses = useStyles();
     const { data, ids } = useListContext();
     return ids ? (
@@ -154,27 +155,28 @@ export const EmployeeContext = ({ permissions }) => {
     ) : null
 };
 
-export const EmployeeList = ({ permissions, ...props }) => {
+export const EmployeeList = ({...props }) => {
+    const { loaded, permissions } = usePermissions();
     const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-    return (
-        <RaList
-            {...props}
-            perPage={25}
-            pagination={<Pagination rowsPerPageOptions={[10, 25, 50, 100]} />}
-            filters={<EmployeeFilter />}
-            bulkActionButtons={permissions === "admin" ? true : false}
-        >
-            {isSmall ? (
-                <SimpleList
-                    primaryText={(record) => record.name}
-                    linkType={permissions === "admin" ? "edit" : "show"}
-                />
-            ) : (
-                <EmployeeContext permissions={permissions} />
-            )}
-
-        </RaList>
-    );
+    return loaded ? (        
+            <RaList
+                {...props}
+                perPage={25}
+                pagination={<Pagination rowsPerPageOptions={[10, 25, 50, 100]} />}
+                filters={<EmployeeFilter />}
+                bulkActionButtons={permissions.includes('manager') || permissions.includes('supervisor') ? true : false}
+            >
+                {isSmall ? (
+                    <SimpleList
+                        primaryText={(record) => record.name}
+                        linkType={permissions.includes('supervisor') ||  permissions.includes('manager') ? "edit" : "show"}
+                    />
+                ) : (
+                    <EmployeeContext permissions={permissions} />
+                )}
+    
+            </RaList>
+    ) : null
 };
 
 export const EmployeeShow = (props) => {
@@ -220,7 +222,6 @@ export const EmployeeEdit = (props) => (
             </FormTab>
             <FormTab label="Account">
                 <TextInput source="user.username" label="Username" />
-                <TextInput source="user.access_type" label="Access Type" />
                 <TextInput type="email" source="user.email" label="Email" />
                 <BooleanInput source="user.isActive" label="Is Active?" />
             </FormTab>
@@ -230,7 +231,7 @@ export const EmployeeEdit = (props) => (
 
 export const EmployeeCreate = (props) => (
     <Create {...props}>
-        <TabbedForm>
+        <TabbedForm redirect={false}>
             <FormTab label="Profile">
                 <TextInput source="firstname" />
                 <TextInput source="lastname" />
@@ -255,7 +256,6 @@ export const EmployeeCreate = (props) => (
             </FormTab>
             <FormTab label="Account">
                 <TextInput source="username" label="Username" />
-                <TextInput source="access_type" label="Access Type" />
                 <TextInput type="email" source="email" label="Email" />
                 <BooleanInput source="isActive" label="Is Active?" />
             </FormTab>

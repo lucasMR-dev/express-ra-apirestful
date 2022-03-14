@@ -11,18 +11,18 @@ const FamilyFilter = (props) => (
 export const FamilyList = ({ permissions, ...props }) => {
     const isSmall = useMediaQuery(theme => theme.breakpoints.down('sm'));
     return (
-        <List {...props} filters={<FamilyFilter />} bulkActionButtons={permissions === "admin" ? true : false}>
+        <List {...props} filters={<FamilyFilter />} bulkActionButtons={permissions.includes('manager') || permissions.includes('supervisor') ? true : false}>
             {isSmall ? (
                 <SimpleList
                     primaryText={record => record.name}
-                    linkType={permissions === 'admin' ? 'edit' : 'show'}
+                    linkType={permissions.includes('manager') ? 'edit' : 'show'}
                 />
             ) : (
                 <Datagrid>
                     <TextField source="id" />
                     <TextField source="name" label="Family" />
-                    {permissions === 'admin' ? <EditButton /> : null}
-                    {permissions === 'admin' ? <DeleteButton /> : null}
+                    {permissions.includes('manager') || permissions.includes('supervisor') ? <EditButton /> : null}
+                    {permissions.includes('manager') || permissions.includes('supervisor') ? <DeleteButton /> : null}
                 </Datagrid>
             )}
         </List>

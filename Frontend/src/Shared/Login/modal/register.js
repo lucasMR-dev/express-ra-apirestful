@@ -109,9 +109,8 @@ const RegisterDialog = () => {
                                 <label for="access_type">Access Type: </label>
                                 <select name="access_type" value={access_type} onChange={e => setAccessType(e.target.value)}>
                                     <option value="">--</option>
-                                    <option value="user">User</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="webmaster">Webmaster</option>
+                                    <option value="0">App User</option>
+                                    <option value="1">Administrator Account</option>
                                 </select>
                             </Grid>
                             <Grid item md={12}>
@@ -137,8 +136,8 @@ const RegisterDialog = () => {
                         <IconCancel />
                         Cancel
                     </Button>
-                    <Button 
-                        style={{color: 'green'}}
+                    <Button
+                        style={{ color: 'green' }}
                         type='button'
                         onClick={submitModal}
                     >

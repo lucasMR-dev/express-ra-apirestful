@@ -1,4 +1,5 @@
 import config from "../Api/config";
+import { stringify } from "query-string";
 const apiUrl = config.apiUrl;
 const authProvider = {
   login: async ({ email, password }) => {
@@ -32,16 +33,38 @@ const authProvider = {
       if (response.status < 200 || response.status >= 300) {
         throw new Error(res.Error.message);
       }
-      Promise.resolve({redirectTo: '#/login'});
+      Promise.resolve();
     } catch (error) {
       return Promise.reject(error);
     }
   },
-  checkError: (error) => {
+  checkError: async (error) => {
     const status = error.status;
-    if (status === 401 || status === 403) {
-      localStorage.removeItem("token");
-      return Promise.reject({ message: false });
+    if (status === 401) {
+      try {
+        const tokenWeb = localStorage.getItem('token');
+        const user = localStorage.getItem('userLogged');
+        const request = new Request(`${apiUrl}/auth/refresh`, {
+          method: "POST",
+          body: JSON.stringify({ tokenWeb, user }),
+          headers: new Headers({ "Content-Type": "application/json" }),
+        });
+        const response = await fetch(request);
+        const res = await response.json();
+        if (response.status === 404) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("expiresIn");
+          localStorage.removeItem("userLogged");
+          localStorage.removeItem("permissions");
+          throw new Error(res);
+        }
+        else {
+          localStorage.setItem("token", res.token);
+          localStorage.setItem("expiresIn", res.exp);
+        }
+      } catch (error) {
+        return Promise.reject(error);
+      }
     }
     return Promise.resolve();
   },
@@ -50,6 +73,7 @@ const authProvider = {
   },
   logout: () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("expiresIn");
     localStorage.removeItem("userLogged");
     localStorage.removeItem("permissions");
     return Promise.resolve();
@@ -58,14 +82,20 @@ const authProvider = {
     const profile = localStorage.getItem("userLogged");
     if (profile !== null) {
       try {
-        const request = new Request(`${apiUrl}/employees/${profile}`, {
+        const query = {
+          sort: JSON.stringify(['id', 'ASC']),
+          range: JSON.stringify([0, 9]),
+          filter: JSON.stringify({ "user": profile }),
+        };
+        const url = `${apiUrl}/employees/?${stringify(query)}`;
+        const request = new Request(url, {
           method: "GET",
         });
         const response = await fetch(request);
         const res = await response.json();
-        const id = res.id;
-        const fullName = res.profile.firstname + " " + res.profile.lastname;
-        const avatar = res.profile.path;
+        const id = res[0].id;
+        const fullName = res[0].profile.firstname + " " + res[0].profile.lastname;
+        const avatar = res[0].profile.path;
         return Promise.resolve({ id, fullName, avatar });
       } catch (error) {
         return Promise.reject(error);
@@ -83,8 +113,30 @@ const authProvider = {
         });
         const response = await fetch(request);
         const res = await response.json();
-        const role = res.access_type;
-        localStorage.setItem("permissions", role);
+        let role;
+        if (res.access_type > 0) {
+          role = res.access_type;
+          localStorage.setItem("permissions", role);
+        }
+        else {
+          const url = `${apiUrl}/employees/${user}`;
+          const request = new Request(url, {
+            method: "GET",
+          });
+          const response = await fetch(request);
+          const res = await response.json();          
+          let department = res.department;
+          let position = res.position;
+          const departments = `${apiUrl}/departments/${department}`;
+          const requestD = new Request(departments, {
+            method: "GET",
+          });
+          const responseD = await fetch(requestD);
+          const resD = await responseD.json();
+          const departmentName = resD.name;
+          role = [departmentName, position];
+          localStorage.setItem("permissions", role);
+        }
         return Promise.resolve(role);
       } catch (error) {
         return Promise.reject(error);

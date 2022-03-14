@@ -87,7 +87,14 @@ router.post('/refresh', async (req, res, next) => {
     const { tokenWeb, user } = req.body;
     try {
         const userObj = await User.findOne({ _id: user });
-        const oldToken = jwt.verify(tokenWeb, config.JWT_SECRET, { ignoreExpiration: true });
+        const oldToken = jwt.verify(tokenWeb, config.JWT_SECRET, (err, result) => {
+            if (err) {
+                res.status(404).send("Token Expired").end();
+            }
+            else {
+                return result
+            }
+        });
         delete oldToken.exp;
         delete oldToken.iat;
         delete oldToken.sub;
@@ -98,8 +105,7 @@ router.post('/refresh', async (req, res, next) => {
         });
         const { iat, exp, sub } = jwt.decode(token);
         // API RESPONSE JWT
-        res.send({ iat, exp, sub, token });
-        res.end();
+        res.send({ iat, exp, sub, token }).end();
         next();
     }
     catch (err) {

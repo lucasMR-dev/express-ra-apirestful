@@ -229,7 +229,6 @@ const dataProvider = {
       formData.append("picture", file.rawFile);
       formData.append("username", params.data.username);
       formData.append("email", params.data.email);
-      formData.append("access_type", params.data.access_type);
       formData.append("isActive", params.data.isActive);
       formData.append("job_name", params.data.job_name);
       formData.append("hire_date", params.data.hire_date);

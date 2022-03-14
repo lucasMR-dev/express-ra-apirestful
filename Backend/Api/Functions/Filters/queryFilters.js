@@ -479,6 +479,7 @@ exports.departmentsFiltersAndSort = (filter, sort, range) => {
         let qName = fieldFilter.name;
         let qId = fieldFilter.id;
         let qCode = fieldFilter.code;
+        let qUser = fieldFilter.user;
         let allQuery = {};
         if (qName) {
           allQuery["name"] = { $regex: qName, $options: "i" };
@@ -488,6 +489,9 @@ exports.departmentsFiltersAndSort = (filter, sort, range) => {
         }
         if (qCode) {
           allQuery["code"] = { $in: [qCode, qCode] };
+        }
+        if (qUser) {
+          allQuery["user"] = qUser;
         }
         /**
          * @var filteredQuery

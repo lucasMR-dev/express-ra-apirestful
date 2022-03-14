@@ -86,8 +86,13 @@ router.get("", async (req, res, next) => {
 // Get Employee by Id (Open Route)
 router.get("/:id", async (req, res, next) => {
   try {
-    const employee = await Employee.findOne({ _id: req.params.id }).populate("user", '-password');
-    res.send(employee).end();
+    const employee = await Employee.findOne({ $or: [{_id: req.params.id},{ user: req.params.id}]}).populate("user", '-password');
+    if (employee) {
+      res.send(employee).end();
+    }
+    else {
+      res.status(404).end();
+    }
     next();
   } catch (error) {
     return next(error.message);
@@ -97,15 +102,16 @@ router.get("/:id", async (req, res, next) => {
 // Post Employee (Closed Route)
 router.post("", upload.single('picture'), jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   const uploading = req.file;
-  let { job_name, hire_date, position, salary, department, firstname, lastname, birthday, phone, username, email, isActive, access_type } = req.body;
+  let { job_name, hire_date, position, salary, department, firstname, lastname, birthday, phone, username, email, isActive } = req.body;
   let password = Math.random().toString(36).substring(2, 15);
   let user = new User({
     username,
     email,
-    access_type,
     isActive,
     password
   });
+
+  const pw = password;
 
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(user.password, salt, async (err, hash) => {
@@ -145,7 +151,8 @@ router.post("", upload.single('picture'), jwt({ secret: config.JWT_SECRET }), as
                   query = { "$push": { "employees": employees } };
                 }
                 await Deparment.findByIdAndUpdate({ _id: success.department }, query, { new: true, runValidators: true });
-                res.status(201).send(success).end();
+                const after = {email: success.email, password: pw };
+                res.status(201).send(after).end();
               }
               return next();
             });
@@ -197,7 +204,7 @@ router.post("", upload.single('picture'), jwt({ secret: config.JWT_SECRET }), as
 // Update Employee (Closed Route)
 router.patch("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   const uploading = req.file;
-  let { job_name, hire_date, position, salary, department, firstname, lastname, birthday, phone, username, email, isActive, access_type } = req.body;
+  let { job_name, hire_date, position, salary, department, firstname, lastname, birthday, phone, username, email, isActive } = req.body;
   try {
     const employee = await Employee.findOneAndUpdate(
       { _id: req.params.id },

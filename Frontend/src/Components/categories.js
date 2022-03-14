@@ -43,15 +43,15 @@ export const CategoryList = ({ permissions, ...props }) => {
         <SimpleList
           primaryText={(record) => record.name}
           secondaryText={(record) => record.family.name}
-          linkType={permissions === "admin" ? "edit" : "show"}
+          linkType={permissions.includes('manager') ? "edit" : "show"}
         />
       ) : (
         <Datagrid>
           <TextField source="id" />
           <TextField source="name" label="Name" />
           <ChipField source="family.name" label="Family" />
-          {permissions === "admin" ? <EditButton /> : null}
-          {permissions === "admin" ? <DeleteButton /> : null}
+          {permissions.includes('manager') || permissions.includes('supervisor') ? <EditButton /> : null}
+          {permissions.includes('manager') || permissions.includes('supervisor') ? <DeleteButton /> : null}
         </Datagrid>
       )}
     </List>
