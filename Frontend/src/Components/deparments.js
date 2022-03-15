@@ -29,11 +29,6 @@ import UserIcon from "@material-ui/icons/Group";
 import { usePermissions } from 'react-admin';
 
 const useStyles = makeStyles({
-    icon: { paddingRight: "0.5em" },
-    link: {
-        display: "inline-flex",
-        alignItems: "center",
-    },
     image: {
         width: 50,
         height: 50,
@@ -66,11 +61,15 @@ export const LinkToRelatedEmployee = ({ record }) => {
     ) : null;
 };
 
+export const PermissionsHandle = (permissions) => {
+    return typeof permissions === "object" ? (permissions.includes('manager') ? <EditButton /> : null ) : false;
+}
+
 export const DepartmentList = ({ ...props }) => {
     const imageFieldClasses = useStyles();
     const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
     const { loaded, permissions } = usePermissions();
-    return (
+    return loaded ? (
         <List
             {...props}
             filters={<DepartmentFilter />}
@@ -96,12 +95,12 @@ export const DepartmentList = ({ ...props }) => {
                             <ImageField classes={imageFieldClasses} source="profile.path" title=""/>
                         </SingleFieldList>
                     </ReferenceArrayField>
-                    { loaded && permissions.includes('manager') ? <EditButton /> : null}
-                    { loaded && permissions.includes('manager') ? <DeleteButton /> : null}
+                    { typeof permissions === "object" ? (permissions.includes('manager') ? <EditButton /> : null) : <EditButton /> }
+                    { typeof permissions === "object" ? (permissions.includes('manager') ? <DeleteButton /> : null) : <DeleteButton /> }
                 </Datagrid>
             )}
         </List>
-    );
+    ) : null
 };
 
 export const DepartmentShow = (props) => (

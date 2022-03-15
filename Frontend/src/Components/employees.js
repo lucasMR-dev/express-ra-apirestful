@@ -24,7 +24,10 @@ import {
     ImageInput,
     ReferenceInput,
     SelectInput,
-    NumberInput
+    NumberInput,
+    usePermissions,
+    useRecordContext,
+    Button as RaButton
 } from "react-admin";
 import {
     useMediaQuery,
@@ -33,40 +36,19 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemSecondaryAction,
-    ListItemText,
-    Typography
+    ListItemText
 } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { stringify } from "query-string";
 import UserIcon from "@material-ui/icons/Group";
-import { usePermissions } from 'react-admin';
 
 const useStyles = makeStyles({
-    root: {
-        marginTop: "1em",
-    },
-    media: {
-        height: 200,
-    },
     image: {
         width: 50,
         height: 50,
     },
-    title: {
-        paddingBottom: "0.5em",
-    },
-    actionSpacer: {
-        display: "flex",
-        justifyContent: "space-around",
-    },
-    icon: { paddingRight: "0.5em" },
-    link: {
-        display: "inline-flex",
-        alignItems: "center",
-    },
-    inlineBlock: { display: 'inline-flex', marginRight: '1rem' },
 });
 
 const EmployeeFilter = (props) => (
@@ -80,6 +62,14 @@ const employee_position_choices = [
     { id: "supervisor", name: "Supervisor" },
     { id: "manager", name: "Manager" },
 ];
+
+export const CredentialsButton = (props) => {
+    const record = useRecordContext();
+    const handleClick = () => {
+        alert(record.firstname);
+    }
+    return <RaButton label="Generate" color="primary" onClick={handleClick} {...props} />;
+}
 
 export const LinkToRelatedDepartment = ({ record }) => {
     const classes = useStyles();
@@ -135,18 +125,18 @@ export const EmployeeContext = () => {
                             }
                         />
                         <ListItemSecondaryAction>
-                            <Typography variant="body1" color="textSecondary">
-                                <ReferenceField
-                                        record={employee}
-                                        source="department"
-                                        reference="departments"
-                                        link={false}
-                                    >
-                                        <ReferenceField source="managers" reference="employees" link={true}>
-                                            <ImageField classes={imageFieldClasses} source="profile.path"/>
-                                        </ReferenceField>
+                            <ReferenceField
+                                record={employee}
+                                source="department"
+                                reference="departments"
+                                link={false}
+                            >
+                                <ReferenceField source="managers" reference="employees" link={true}>
+                                    <>
+                                        <ImageField classes={imageFieldClasses} source="profile.path" />
+                                    </>
                                 </ReferenceField>
-                            </Typography>
+                            </ReferenceField>
                         </ListItemSecondaryAction>
                     </ListItem>
                 )
@@ -155,27 +145,32 @@ export const EmployeeContext = () => {
     ) : null
 };
 
-export const EmployeeList = ({...props }) => {
+export const PermissionsHandle = (permissions) => {
+    return typeof permissions === "string" ? (permissions.includes('manager') || permissions.includes('supervisor') ? true : false) : false;
+}
+
+export const EmployeeList = ({ ...props }) => {
     const { loaded, permissions } = usePermissions();
     const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-    return loaded ? (        
-            <RaList
-                {...props}
-                perPage={25}
-                pagination={<Pagination rowsPerPageOptions={[10, 25, 50, 100]} />}
-                filters={<EmployeeFilter />}
-                bulkActionButtons={permissions.includes('manager') || permissions.includes('supervisor') ? true : false}
-            >
-                {isSmall ? (
-                    <SimpleList
-                        primaryText={(record) => record.name}
-                        linkType={permissions.includes('supervisor') ||  permissions.includes('manager') ? "edit" : "show"}
-                    />
-                ) : (
-                    <EmployeeContext permissions={permissions} />
-                )}
-    
-            </RaList>
+
+    return loaded ? (
+        <RaList
+            {...props}
+            perPage={25}
+            pagination={<Pagination rowsPerPageOptions={[10, 25, 50, 100]} />}
+            filters={<EmployeeFilter />}
+            bulkActionButtons={<PermissionsHandle permissions={permissions} />}
+        >
+            {isSmall ? (
+                <SimpleList
+                    primaryText={(record) => record.name}
+                    linkType={permissions.includes('supervisor') || permissions.includes('manager') ? "edit" : "show"}
+                />
+            ) : (
+                <EmployeeContext permissions={permissions} />
+            )}
+
+        </RaList>
     ) : null
 };
 
@@ -231,7 +226,7 @@ export const EmployeeEdit = (props) => (
 
 export const EmployeeCreate = (props) => (
     <Create {...props}>
-        <TabbedForm redirect={false}>
+        <TabbedForm>
             <FormTab label="Profile">
                 <TextInput source="firstname" />
                 <TextInput source="lastname" />
@@ -255,6 +250,7 @@ export const EmployeeCreate = (props) => (
                 <NumberInput source="salary" />
             </FormTab>
             <FormTab label="Account">
+                <CredentialsButton />
                 <TextInput source="username" label="Username" />
                 <TextInput type="email" source="email" label="Email" />
                 <BooleanInput source="isActive" label="Is Active?" />
