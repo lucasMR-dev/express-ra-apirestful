@@ -6,6 +6,7 @@ import dataProvider from './Api/dataProvider';
 import dashboard from './Components/dashboard.js';
 import { customLogin } from './Shared/Login/customLogin';
 import Footer from './Shared/Footer/footer';
+import { layout } from './Shared/layout';
 import { ProductList, ProductEdit, ProductCreate, ProductShow } from './Components/products';
 import { CategoryList, CategoryEdit, CategoryCreate, CategoryShow } from './Components/categories';
 import { BrandList, BrandEdit, BrandCreate, BrandShow } from './Components/brands';
@@ -32,19 +33,27 @@ const App = () => (
       loginPage={customLogin}
       authProvider={authProvider}
       catchAll={NotFound}
+      layout={layout}
     >
       {permissions => [
-        // Restrict access to the edit and remove views to admin only
         <Resource name="profile" edit={ProfileEdit} />,
-        permissions.includes("Warehouse") ? <Resource name="products" list={ProductList} create={ProductCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? ProductEdit : null} show={ProductShow} icon={ProductsIcon} /> : null,
-        permissions.includes("Warehouse") ? <Resource name="categories" list={CategoryList} create={CategoryCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? CategoryEdit : null} show={CategoryShow} icon={CategoriesIcon} /> : null,
-        permissions.includes("Warehouse") ? <Resource name="brands" list={BrandList} create={BrandCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? BrandEdit : null} show={BrandShow} icon={BrandsIcon} /> : null,
-        permissions.includes("Warehouse") ? <Resource name="families" list={FamilyList} create={FamilyCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? FamilyEdit : null} show={FamilyShow} icon={FamiliesIcon} /> : null,
-        /*permissions.includes("Warehouse") ? <Resource name="sales" list={EmployeeList} create={EmployeeCreate} edit={EmployeeEdit} show={EmployeeShow} icon={SalesIcon} /> : null,*/
-        permissions.includes("RRHH") || permissions > 0 ? <Resource name="departments" list={DepartmentList} create={DepartmentCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? DepartmentEdit : null} show={DepartmentShow} icon={DepartmentsIcon} /> : null,
-        permissions.includes("RRHH") || permissions > 0 ? <Resource name="employees" list={EmployeeList} create={EmployeeCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? EmployeeEdit : null} show={EmployeeShow} icon={EmployeesIcon} /> : null,
-        // Admin Display Only
-        permissions > 0 ? <Resource name="users" list={UserList} create={UserCreate} edit={UserEdit} /> : null,
+        // Restrict access to the edit and remove views to admin only
+        typeof permissions === "string" ? (
+          permissions.includes("Warehouse") ? <Resource name="products" list={ProductList} create={ProductCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? ProductEdit : null} show={ProductShow} icon={ProductsIcon} /> : null,
+          permissions.includes("Warehouse") ? <Resource name="categories" list={CategoryList} create={CategoryCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? CategoryEdit : null} show={CategoryShow} icon={CategoriesIcon} /> : null,
+          permissions.includes("Warehouse") ? <Resource name="brands" list={BrandList} create={BrandCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? BrandEdit : null} show={BrandShow} icon={BrandsIcon} /> : null,
+          permissions.includes("Warehouse") ? <Resource name="families" list={FamilyList} create={FamilyCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? FamilyEdit : null} show={FamilyShow} icon={FamiliesIcon} /> : null,
+          /*permissions.includes("Warehouse") ? <Resource name="sales" list={EmployeeList} create={EmployeeCreate} edit={EmployeeEdit} show={EmployeeShow} icon={SalesIcon} /> : null,*/
+          permissions.includes("RRHH") ? <Resource name="departments" list={DepartmentList} create={DepartmentCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? DepartmentEdit : null} show={DepartmentShow} icon={DepartmentsIcon} /> : null,
+          permissions.includes("RRHH") ? <Resource name="employees" list={EmployeeList} create={EmployeeCreate} edit={permissions.includes('manager') || permissions.includes('supervisor') ? EmployeeEdit : null} show={EmployeeShow} icon={EmployeesIcon} /> : null
+        ) : 
+            <Resource name="users" list={UserList} create={UserCreate} edit={UserEdit} />,
+            <Resource name="products" list={ProductList} create={ProductCreate} edit={ProductEdit} show={ProductShow} icon={ProductsIcon} />,
+            <Resource name="categories" list={CategoryList} create={CategoryCreate} edit={CategoryEdit} show={CategoryShow} icon={CategoriesIcon} />,
+            <Resource name="brands" list={BrandList} create={BrandCreate} edit={BrandEdit} show={BrandShow} icon={BrandsIcon} />,
+            <Resource name="families" list={FamilyList} create={FamilyCreate} edit={FamilyEdit} show={FamilyShow} icon={FamiliesIcon} />,
+            <Resource name="departments" list={DepartmentList} create={DepartmentCreate} edit={DepartmentEdit} show={DepartmentShow} icon={DepartmentsIcon} />,
+            <Resource name="employees" list={EmployeeList} create={EmployeeCreate} edit={EmployeeEdit} show={EmployeeShow} icon={EmployeesIcon} />
       ]}
 
     </Admin>
