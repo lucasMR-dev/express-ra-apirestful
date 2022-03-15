@@ -482,7 +482,7 @@ exports.departmentsFiltersAndSort = (filter, sort, range) => {
         let qUser = fieldFilter.user;
         let allQuery = {};
         if (qName) {
-          allQuery["name"] = { $regex: qName, $options: "i" };
+          allQuery["profile.firstname"] = { $regex: qName, $options: "i" };
         }
         if (qId) {
           allQuery["id"] = { $regex: qId, $options: "i" };
