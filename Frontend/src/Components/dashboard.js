@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { Title } from "react-admin";
+import { Title, usePermissions } from "react-admin";
 import {
   LineChart,
   Line,
@@ -263,14 +263,15 @@ const Default = () => {
   )
 }
 
-const CustomLayout = ({ permissions }) => {
-  return (
-    permissions.includes('Warehouse') && permissions.includes('manager') ? (
-      <Warehouse />
-    ) : permissions.includes('RRHH') && permissions.includes('manager') ? (
-      <Rrhh />
-    ) : <Default />
-  )
+const CustomLayout = () => {
+  const { loaded, permissions } = usePermissions();
+  return loaded ? (
+      permissions.includes('Warehouse') && permissions.includes('manager') ? (
+        <Warehouse />
+      ) : permissions.includes('RRHH') && permissions.includes('manager') ? (
+        <Rrhh />
+      ) : <Default />
+  ) : null;
 }
 
 const Dashboard = () => {

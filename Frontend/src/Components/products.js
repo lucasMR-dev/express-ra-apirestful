@@ -33,7 +33,10 @@ import {
   Error,
   TabbedForm,
   FormTab,
-  ReferenceInput
+  ReferenceInput,
+  Toolbar,
+  SaveButton,
+  usePermissions
 } from "react-admin";
 import { makeStyles } from '@material-ui/core/styles';
 import RichTextInput from "ra-input-rich-text";
@@ -56,10 +59,11 @@ const ProductFilter = (props) => (
   </Filter>
 );
 
-export const ProductList = ({ permissions, ...props }) => {
+export const ProductList = ({ ...props }) => {
   const imageFieldClasses = customStyles();
+  const { loaded, permissions } = usePermissions();
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  return (
+  return loaded ? (
     <List {...props} filters={<ProductFilter />}>
       {isSmall ? (
         <SimpleList
@@ -89,13 +93,13 @@ export const ProductList = ({ permissions, ...props }) => {
             />
             <ChipField source="colorAvailable" label="Colors" />
             <ImageField classes={imageFieldClasses} source="pictures[0].small" label="Pictures" />
-            {permissions === "admin" ? <EditButton /> : null}
-            {permissions === "admin" ? <DeleteButton /> : null}
+            <EditButton />
+            {permissions.includes("manager") || permissions.includes("supervisor") ? <DeleteButton /> : null}
           </Datagrid>
         </Box>
       )}
     </List>
-  );
+  ) : null;
 };
 
 export const ProductShow = ({ permissions, ...props }) => {
@@ -103,7 +107,7 @@ export const ProductShow = ({ permissions, ...props }) => {
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   return (
     <Show {...props}>
-      { isSmall ? (
+      {isSmall ? (
         <SimpleShowLayout>
           <TextField source="name" />
           <TextField source="brand.name" label="Brand" />
@@ -125,7 +129,19 @@ export const ProductShow = ({ permissions, ...props }) => {
   )
 };
 
-export const ProductEdit = ({ permissions, ...props }) => {
+const CustomToolbar = (props) => {
+  const { loaded, permissions } = usePermissions();
+  return loaded ? (
+    <>
+      <Toolbar {...props}>
+        <SaveButton />
+        {permissions.includes('manager') ? <DeleteButton style={{marginLeft: "auto"}} /> : null}
+      </Toolbar>
+    </>
+  ) : null;
+};
+
+export const ProductEdit = ({ ...props }) => {
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const classes = customStyles();
   const payload = {
@@ -183,7 +199,7 @@ export const ProductEdit = ({ permissions, ...props }) => {
           <TextInput source="colorAvailable" />
         </SimpleForm>
       ) : (
-        <TabbedForm>
+        <TabbedForm toolbar={<CustomToolbar />}>
           <FormTab label="Info">
             <TextInput disabled source="id" />
             <TextInput disabled source="sku" />
@@ -237,7 +253,7 @@ export const ProductEdit = ({ permissions, ...props }) => {
         </TabbedForm>
       )}
     </Edit>
-  )
+  );
 };
 
 export const ProductCreate = ({ permissions, ...props }) => (

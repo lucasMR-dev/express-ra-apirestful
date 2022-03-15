@@ -60,7 +60,7 @@ const RegisterDialog = () => {
                         <form id='modalForm' style={{ width: "100%" }}>
                             <Grid container>
                                 <Grid item md={2}>
-                                    <label for="email">Email: </label>
+                                    <label htmlFor="email">Email: </label>
                                 </Grid>
                                 <Grid item md={10}>
                                     <input
@@ -75,7 +75,7 @@ const RegisterDialog = () => {
                                 </Grid>
                             </Grid>
                             <Grid container>
-                                <Grid item md={2}>  <label for="password">Password: </label></Grid>
+                                <Grid item md={2}>  <label htmlFor="password">Password: </label></Grid>
                                 <Grid item md={10}>
                                     <input
                                         name="password"
@@ -90,7 +90,7 @@ const RegisterDialog = () => {
                             </Grid>
                             <Grid container>
                                 <Grid item md={2}>
-                                    <label for="username">Username: </label>
+                                    <label htmlFor="username">Username: </label>
 
                                 </Grid>
                                 <Grid item md={10}>
@@ -106,7 +106,7 @@ const RegisterDialog = () => {
                                 </Grid>
                             </Grid>
                             <Grid item md={12}>
-                                <label for="access_type">Access Type: </label>
+                                <label htmlFor="access_type">Access Type: </label>
                                 <select name="access_type" value={access_type} onChange={e => setAccessType(e.target.value)}>
                                     <option value="">--</option>
                                     <option value="0">App User</option>
@@ -114,7 +114,7 @@ const RegisterDialog = () => {
                                 </select>
                             </Grid>
                             <Grid item md={12}>
-                                <label for="isActive">Is Active? </label>
+                                <label htmlFor="isActive">Is Active? </label>
                                 <input
                                     name="isActive"
                                     type="checkbox"

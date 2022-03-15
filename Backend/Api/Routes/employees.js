@@ -151,7 +151,7 @@ router.post("", upload.single('picture'), jwt({ secret: config.JWT_SECRET }), as
                   query = { "$push": { "employees": employees } };
                 }
                 await Deparment.findByIdAndUpdate({ _id: success.department }, query, { new: true, runValidators: true });
-                const after = {email: success.email, password: pw };
+                const after = {email: user.email, password: pw };
                 res.status(201).send(after).end();
               }
               return next();
@@ -193,7 +193,7 @@ router.post("", upload.single('picture'), jwt({ secret: config.JWT_SECRET }), as
               return next();
             });
           }
-        });
+        }).catch((err) => res.status(400).send(err).end());
       } catch (error) {
         console.log(error);
       }

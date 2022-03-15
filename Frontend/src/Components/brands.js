@@ -24,6 +24,9 @@ import {
   Error,
   useListContext,
   useTranslate,
+  usePermissions,
+  Toolbar,
+  SaveButton
 } from "react-admin";
 import {
   useMediaQuery,
@@ -89,27 +92,28 @@ export const LinkToRelatedProducts = ({ record }) => {
   ) : null;
 };
 
-export const BrandGrid = ({ permissions, ...props }) => {
+export const BrandGrid = ({ ...props }) => {
+  const { loaded, permissions } = usePermissions();
   const classes = useStyles(props);
   const { data, ids } = useListContext();
   return ids ? (
-    <Grid container spacing={2} className={classes.root}>
-      {ids.map((id) => (
-        <Grid key={id} md={6} item>
-          <Card>
-            <CardMedia image={data[id].logo} className={classes.media} />
-            <CardContent className={classes.title}></CardContent>
-            <CardActions classes={{ spacing: classes.actionSpacer }}>
-              <LinkToRelatedProducts record={data[id]} />
-              {permissions.includes('manager') || permissions.includes('supervisor') ? (
+    loaded ? (
+      <Grid container spacing={2} className={classes.root}>
+        {ids.map((id) => (
+          <Grid key={id} md={6} item>
+            <Card>
+              <CardMedia image={data[id].logo} className={classes.media} />
+              <CardContent className={classes.title}></CardContent>
+              <CardActions classes={{ spacing: classes.actionSpacer }}>
+                <LinkToRelatedProducts record={data[id]} />
                 <EditButton basePath="/brands" record={data[id]} />
-              ) : null}
-              {permissions.includes('manager') || permissions.includes('supervisor') ? <DeleteButton /> : null}
-            </CardActions>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
+                {permissions.includes('manager') || permissions.includes('supervisor') ? <DeleteButton /> : null}
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    ) : null
   ) : null;
 };
 
@@ -133,7 +137,7 @@ export const BrandList = ({ permissions, ...props }) => {
           linkType={permissions.includes('manager') ? "edit" : "show"}
         />
       ) : (
-        <BrandGrid permissions={permissions.includes('manager') || permissions.includes('supervisor')} />
+        <BrandGrid />
       )}
     </List>
   );
@@ -148,6 +152,19 @@ export const BrandShow = (props) => (
     </SimpleShowLayout>
   </Show>
 );
+
+const CustomToolbar = (props) => {
+  const { loaded, permissions } = usePermissions();
+  return loaded ? (
+    <>
+      <Toolbar {...props}>
+        <SaveButton />
+        {permissions.includes('manager') ? <DeleteButton style={{marginLeft: "auto"}} /> : null}
+      </Toolbar>
+    </>
+  ) : null;
+};
+
 
 export const BrandEdit = (props) => {
   const payload = {
@@ -167,7 +184,7 @@ export const BrandEdit = (props) => {
 
   return (
     <Edit {...props}>
-      <SimpleForm>
+      <SimpleForm toolbar={<CustomToolbar />}>
         <TextInput source="id" disabled />
         <TextInput source="name" />
         <SelectInput source="partnerStatus" choices={partnerStatus_choices} />
