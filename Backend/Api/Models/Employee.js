@@ -43,6 +43,20 @@ const EmployeeSchema = new mongoose.Schema({
             type: String,
             default: '',
             trim: true
+        },
+        config: {
+            language: {
+                type: String,
+                default: 'en-EN'
+            },
+            darkTheme: {
+                type: Boolean,
+                default: false
+            },
+            color: {
+                type: String,
+                default: 'blue'
+            }
         }
     },
     user: {

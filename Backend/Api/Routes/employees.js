@@ -53,7 +53,7 @@ router.get("", async (req, res, next) => {
     const { filter, sort, range } = req.query;
     if (filter && !sort && !range) {
       let filtro = JSON.parse(filter);
-      const data = await Employee.find({_id: { "$in": filtro.id}});
+      const data = await Employee.find({ _id: { "$in": filtro.id } });
       res.status(200).send(data).end();
       next();
     }
@@ -86,7 +86,7 @@ router.get("", async (req, res, next) => {
 // Get Employee by Id (Open Route)
 router.get("/:id", async (req, res, next) => {
   try {
-    const employee = await Employee.findOne({ $or: [{_id: req.params.id},{ user: req.params.id}]}).populate("user", '-password');
+    const employee = await Employee.findOne({ $or: [{ _id: req.params.id }, { user: req.params.id }] }).populate("user", '-password');
     if (employee) {
       res.send(employee).end();
     }
@@ -151,7 +151,7 @@ router.post("", upload.single('picture'), jwt({ secret: config.JWT_SECRET }), as
                   query = { "$push": { "employees": employees } };
                 }
                 await Deparment.findByIdAndUpdate({ _id: success.department }, query, { new: true, runValidators: true });
-                const after = {email: user.email, password: pw };
+                const after = { email: user.email, password: pw };
                 res.status(201).send(after).end();
               }
               return next();
@@ -238,6 +238,86 @@ router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next)
       res.status(404).send(response.error).end();
       return next();
     });
+  } catch (error) {
+    return next(error.message);
+  }
+});
+
+// Update Employee Profile
+router.patch("/profile/:id", upload.single('picture'), jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
+  const uploading = req.file;
+  let { birthday, phone } = req.body;
+  try {
+    if (uploading) {
+      const picture = config.DEPLOY_URL + "/" + uploading.path;
+      await Employee.find({ _id: req.params.id }, async function (err, success) {
+        let emp = success[0];
+        if (err) {
+          res.status(404).end();
+        }
+        else {
+          const employee = await Employee.findOneAndUpdate(
+            { _id: req.params.id },
+            {
+              $set: {
+                'profile.firstname': emp.profile.firstname,
+                'profile.lastname': emp.profile.lastname,
+                'profile.birthday': birthday,
+                'profile.phone': phone,
+                'profile.path': picture,
+                'profile.config': emp.profile.config
+              }
+            },
+            { new: true, runValidators: true }
+          );
+          res.status(201).send(employee).end();
+          next();
+        }
+      });
+    }
+    else {
+      await Employee.find({ _id: req.params.id }, async function (err, success) {
+        let emp = success[0];
+        if (err) {
+          res.status(404).end();
+        }
+        else {
+          const employee = await Employee.findOneAndUpdate(
+            { _id: req.params.id },
+            {
+              $set: {
+                'profile.firstname': emp.profile.firstname,
+                'profile.lastname': emp.profile.lastname,
+                'profile.birthday': birthday,
+                'profile.phone': phone,
+                'profile.path': emp.profile.path,
+                'profile.config': emp.profile.config
+              }
+            },
+            { new: true, runValidators: true }
+          );
+          res.status(201).send(employee).end();
+          next();
+        }
+      });
+    }
+  }
+  catch (error) {
+    return next(error.message);
+  }
+});
+
+// Update Employee Config
+router.patch("/config/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
+  const config = req.body.profile.config;
+  try {
+    const employee = await Employee.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: { 'profile.config': config } },
+      { new: true, runValidators: true }
+    );
+    res.send(employee).end();
+    next();
   } catch (error) {
     return next(error.message);
   }

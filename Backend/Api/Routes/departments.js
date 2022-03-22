@@ -16,11 +16,9 @@ router.get("", async (req, res, next) => {
   try {
     // Query Params
     const { filter, sort, range } = req.query;
-    let checkFilter = Object.keys(JSON.parse(filter)).toString();
-    if (checkFilter.length <= 2 && !sort && !range) {
-      let filtro = JSON.parse(filter);
-      let id = filtro.id.toString();
-      const data = await Department.find({_id: id});
+    if (filter && !sort && !range) {
+      let arr = JSON.parse(filter);
+      const data = await Department.find({_id: { "$in": arr.id}});
       res.status(200).send(data).end();
       next();
     }
