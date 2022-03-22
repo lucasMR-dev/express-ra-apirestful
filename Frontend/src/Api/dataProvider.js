@@ -277,6 +277,35 @@ const dataProvider = {
       data: json,
     }));
   },
+  updateUserProfile: async (params) => {
+    let picture = params.data.picture;
+    let birthday = params.data.birthday;
+    let phone  = params.data.phone;
+    const formData = new FormData();
+    let optionHeader = new Headers({ Accept: "*/*" });
+     // Fill the form
+     formData.append("birthday",birthday);
+     formData.append("phone", phone);
+    if (picture) {
+      if (picture.rawFile.size > 0) {
+        formData.append("picture", picture.rawFile);
+      }
+    }
+    const { update } = await httpClient(`${apiUrl}/employees/profile/${params.data.id}`, {
+      method: "PATCH",
+      body: formData,
+      headers: optionHeader,
+    });
+    return { data: update };
+  },
+  updateTheme: async (params) => {
+    const { json } = await httpClient(`${apiUrl}/employees/config/${params.data.id}`, {
+      method: "PATCH",
+      body: JSON.stringify({profile: { config: {...params.data.config}}}),
+    });
+    return { data: json };
+  }
+
 };
 
 export default dataProvider;

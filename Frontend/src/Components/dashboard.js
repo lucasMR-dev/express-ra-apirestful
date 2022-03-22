@@ -80,103 +80,105 @@ const chart3 = [
 ];
 
 const Warehouse = () => {
-  <div className="dashboard-wrapper">
-    <Card>
-      <div className="top-line">
-        <Grid container direction="row">
-          <Grid item xs={6} md={6} lg={6}>
-            <AreaChart
-              width={600}
-              height={300}
-              data={chart3}
-              margin={{
-                top: 10,
-                right: 0,
-                left: 50,
-                bottom: 0,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Area
-                type="monotone"
-                dataKey="uv"
-                stackId="1"
-                stroke="#8884d8"
-                fill="#8884d8"
-              />
-              <Area
-                type="monotone"
-                dataKey="pv"
-                stackId="1"
-                stroke="#82ca9d"
-                fill="#82ca9d"
-              />
-              <Area
-                type="monotone"
-                dataKey="amt"
-                stackId="1"
-                stroke="#ffc658"
-                fill="#ffc658"
-              />
-            </AreaChart>
-          </Grid>
-          <Grid item xs={6} md={6} lg={6}>
-            <DashboardMetrics />
-          </Grid>
-        </Grid>
-      </div>
-      <Divider light />
-      <CardContent>
-        <div className="middle-line">
-          <Grid container>
+  return (
+    <div className="dashboard-wrapper">
+      <Card>
+        <div className="top-line">
+          <Grid container direction="row">
             <Grid item xs={6} md={6} lg={6}>
-              <BarChart
-                width={730}
-                height={250}
-                data={chart2}
-                margin={{ top: 30 }}
-              >
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="orders" fill="#8884d8" />
-                <Bar dataKey="completed" fill="#20D60D" />
-                <Bar dataKey="returned" fill="#B80000" />
-              </BarChart>
-            </Grid>
-            <Grid item xs={6} md={6} lg={6}>
-              <LineChart
+              <AreaChart
                 width={600}
                 height={300}
-                data={chart1}
-                margin={{ top: 5, right: 10, bottom: 5, left: 0 }}
+                data={chart3}
+                margin={{
+                  top: 10,
+                  right: 0,
+                  left: 50,
+                  bottom: 0,
+                }}
               >
-                <Line type="monotone" dataKey="uv" stroke="#6D27E3" />
-                <Line type="monotone" dataKey="pv" stroke="#FFAD2B" />
-                <Line type="monotone" dataKey="amt" stroke="#F77F40" />
-                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <Legend
-                  align="left"
-                  verticalAlign="middle"
-                  layout="vertical"
-                  iconSize={20}
-                />
+                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-              </LineChart>
+                <Area
+                  type="monotone"
+                  dataKey="uv"
+                  stackId="1"
+                  stroke="#8884d8"
+                  fill="#8884d8"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="pv"
+                  stackId="1"
+                  stroke="#82ca9d"
+                  fill="#82ca9d"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="amt"
+                  stackId="1"
+                  stroke="#ffc658"
+                  fill="#ffc658"
+                />
+              </AreaChart>
+            </Grid>
+            <Grid item xs={6} md={6} lg={6}>
+              <DashboardMetrics />
             </Grid>
           </Grid>
         </div>
-      </CardContent>
-      <Divider light />
-      <div className="bottom-line"></div>
-    </Card>
-  </div>
+        <Divider light />
+        <CardContent>
+          <div className="middle-line">
+            <Grid container>
+              <Grid item xs={6} md={6} lg={6}>
+                <BarChart
+                  width={730}
+                  height={250}
+                  data={chart2}
+                  margin={{ top: 30 }}
+                >
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="orders" fill="#8884d8" />
+                  <Bar dataKey="completed" fill="#20D60D" />
+                  <Bar dataKey="returned" fill="#B80000" />
+                </BarChart>
+              </Grid>
+              <Grid item xs={6} md={6} lg={6}>
+                <LineChart
+                  width={600}
+                  height={300}
+                  data={chart1}
+                  margin={{ top: 5, right: 10, bottom: 5, left: 0 }}
+                >
+                  <Line type="monotone" dataKey="uv" stroke="#6D27E3" />
+                  <Line type="monotone" dataKey="pv" stroke="#FFAD2B" />
+                  <Line type="monotone" dataKey="amt" stroke="#F77F40" />
+                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                  <Legend
+                    align="left"
+                    verticalAlign="middle"
+                    layout="vertical"
+                    iconSize={20}
+                  />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                </LineChart>
+              </Grid>
+            </Grid>
+          </div>
+        </CardContent>
+        <Divider light />
+        <div className="bottom-line"></div>
+      </Card>
+    </div>
+  )
 }
 
 const Rrhh = () => {
@@ -254,7 +256,7 @@ const Default = () => {
                   <Bar dataKey="completed" fill="#20D60D" />
                   <Bar dataKey="returned" fill="#B80000" />
                 </BarChart>
-              </Grid>             
+              </Grid>
             </Grid>
           </div>
         </CardContent>
@@ -263,15 +265,119 @@ const Default = () => {
   )
 }
 
+const SystemMonitor = () => {
+  return (
+    <div className="dashboard-wrapper">
+      <Card>
+        <div className="top-line">
+          <Grid container direction="row">
+            <Grid item xs={6} md={6} lg={6}>
+              <AreaChart
+                width={600}
+                height={300}
+                data={chart3}
+                margin={{
+                  top: 10,
+                  right: 0,
+                  left: 50,
+                  bottom: 0,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Area
+                  type="monotone"
+                  dataKey="uv"
+                  stackId="1"
+                  stroke="#8884d8"
+                  fill="#8884d8"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="pv"
+                  stackId="1"
+                  stroke="#82ca9d"
+                  fill="#82ca9d"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="amt"
+                  stackId="1"
+                  stroke="#ffc658"
+                  fill="#ffc658"
+                />
+              </AreaChart>
+            </Grid>
+            <Grid item xs={6} md={6} lg={6}>
+              <DashboardMetrics />
+            </Grid>
+          </Grid>
+        </div>
+        <Divider light />
+        <CardContent>
+          <div className="middle-line">
+            <Grid container>
+              <Grid item xs={6} md={6} lg={6}>
+                <BarChart
+                  width={730}
+                  height={250}
+                  data={chart2}
+                  margin={{ top: 30 }}
+                >
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="orders" fill="#8884d8" />
+                  <Bar dataKey="completed" fill="#20D60D" />
+                  <Bar dataKey="returned" fill="#B80000" />
+                </BarChart>
+              </Grid>
+              <Grid item xs={6} md={6} lg={6}>
+                <LineChart
+                  width={600}
+                  height={300}
+                  data={chart1}
+                  margin={{ top: 5, right: 10, bottom: 5, left: 0 }}
+                >
+                  <Line type="monotone" dataKey="uv" stroke="#6D27E3" />
+                  <Line type="monotone" dataKey="pv" stroke="#FFAD2B" />
+                  <Line type="monotone" dataKey="amt" stroke="#F77F40" />
+                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                  <Legend
+                    align="left"
+                    verticalAlign="middle"
+                    layout="vertical"
+                    iconSize={20}
+                  />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                </LineChart>
+              </Grid>
+            </Grid>
+          </div>
+        </CardContent>
+        <Divider light />
+        <div className="bottom-line"></div>
+      </Card>
+    </div>
+  )
+}
+
 const CustomLayout = () => {
   const { loaded, permissions } = usePermissions();
   return loaded ? (
+    typeof permissions == "object" ? (
       permissions.includes('Warehouse') && permissions.includes('manager') ? (
         <Warehouse />
       ) : permissions.includes('RRHH') && permissions.includes('manager') ? (
         <Rrhh />
       ) : <Default />
-  ) : null;
+    ) : <SystemMonitor />
+  ) : null
 }
 
 const Dashboard = () => {
@@ -326,8 +432,7 @@ const Dashboard = () => {
         </Card>
       ) : <CustomLayout />}
     </React.Fragment>
-  );
-
+  )
 }
 
 export default Dashboard;

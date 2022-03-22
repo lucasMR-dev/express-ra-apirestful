@@ -178,11 +178,11 @@ export const EmployeeShow = (props) => {
     return (
         <Show {...props}>
             <SimpleShowLayout>
-                <TextField source="profile.firstname" />
-                <TextField source="profile.lastname" />
-                <DateField source="profile.birthday" />
-                <TextField source="profile.phone" />
-                <ImageField source="profile.path" />
+                <ImageField source="profile.path" label="Picture" />
+                <TextField source="profile.firstname" label="Firstname" />
+                <TextField source="profile.lastname" label="Lastname" />
+                <DateField source="profile.birthday" label="Birthday" />
+                <TextField source="profile.phone" label="Phone" />
                 <TextField source="user.username" label="Username" />
                 <TextField source="user.access_type" label="Access Type" />
                 <EmailField source="user.email" label="Email" />

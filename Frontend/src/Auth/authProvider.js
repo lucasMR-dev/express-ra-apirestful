@@ -76,6 +76,7 @@ const authProvider = {
     localStorage.removeItem("expiresIn");
     localStorage.removeItem("userLogged");
     localStorage.removeItem("permissions");
+    localStorage.removeItem("appConfig");
     return Promise.resolve();
   },
   getIdentity: async () => {
@@ -96,7 +97,10 @@ const authProvider = {
         const id = res[0].id;
         const fullName = res[0].profile.firstname + " " + res[0].profile.lastname;
         const avatar = res[0].profile.path;
-        return Promise.resolve({ id, fullName, avatar });
+        const phone = res[0].profile.phone;
+        const birthday = res[0].profile.birthday;
+        const config = res[0].profile.config;
+        return Promise.resolve({ id, fullName, avatar, birthday, phone, config });        
       } catch (error) {
         return Promise.reject(error);
       }
