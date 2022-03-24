@@ -145,6 +145,28 @@ const dataProvider = {
         body: JSON.stringify(data),
       }).then(({ json }) => ({ data: json }));
     }
+    else if (path === 'employees') {
+
+      const firstname = params.data.profile.firstname;
+      const lastname = params.data.profile.lastname;
+      const birthday = params.data.profile.birthday;
+      const phone = params.data.phone;
+      const username = params.data.user.username;
+      const email = params.data.user.email;
+      const isActive = params.data.user.isActive;
+      const job_name = params.data.job_name;
+      const hire_date = params.data.hire_date;
+      const salary = params.data.salary;
+      const position = params.data.position;
+      const department = params.data.department;
+
+      const data = { firstname, lastname, birthday, phone, username, email, isActive, job_name, hire_date, salary, position, department };
+
+      return httpClient(`${apiUrl}/${resource}/${params.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      }).then(({ json }) => ({ data: json }));
+    }
     else {
       return httpClient(`${apiUrl}/${resource}/${params.id}`, {
         method: "PATCH",
@@ -280,12 +302,12 @@ const dataProvider = {
   updateUserProfile: async (params) => {
     let picture = params.data.picture;
     let birthday = params.data.birthday;
-    let phone  = params.data.phone;
+    let phone = params.data.phone;
     const formData = new FormData();
     let optionHeader = new Headers({ Accept: "*/*" });
-     // Fill the form
-     formData.append("birthday",birthday);
-     formData.append("phone", phone);
+    // Fill the form
+    formData.append("birthday", birthday);
+    formData.append("phone", phone);
     if (picture) {
       if (picture.rawFile.size > 0) {
         formData.append("picture", picture.rawFile);
@@ -301,7 +323,7 @@ const dataProvider = {
   updateTheme: async (params) => {
     const { json } = await httpClient(`${apiUrl}/employees/config/${params.data.id}`, {
       method: "PATCH",
-      body: JSON.stringify({profile: { config: {...params.data.config}}}),
+      body: JSON.stringify({ profile: { config: { ...params.data.config } } }),
     });
     return { data: json };
   }

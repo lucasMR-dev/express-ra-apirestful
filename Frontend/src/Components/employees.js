@@ -209,7 +209,7 @@ export const EmployeeEdit = (props) => (
                 <ReferenceInput
                     source="department"
                     reference="departments"
-                    link={false}
+                    link="false"
                 >
                     <SelectInput optionText="name" optionValue="id" />
                 </ReferenceInput>

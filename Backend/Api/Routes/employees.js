@@ -203,16 +203,47 @@ router.post("", upload.single('picture'), jwt({ secret: config.JWT_SECRET }), as
 
 // Update Employee (Closed Route)
 router.patch("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
-  const uploading = req.file;
-  let { job_name, hire_date, position, salary, department, firstname, lastname, birthday, phone, username, email, isActive } = req.body;
   try {
-    const employee = await Employee.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
-      { new: true, runValidators: true }
-    );
-    res.send(employee).end();
-    next();
+    const { firstname, lastname, birthday, phone, position, hire_date, department, salary, job_name, email, username, isActive } = req.body;
+    await User.findOneAndUpdate({ username: username }, {email: email, username: username, isActive: isActive}, {new: true, runValidators: true}, async function (err, doc) {
+      if(err) {
+        res.send(err).end();
+        next();
+      }
+      else{
+        await Employee.find({ user: doc._id }, async function (err, success) {
+          let emp = success[0];
+          if (err) {
+            res.status(404).end();
+          }
+          else {
+            const employee = await Employee.findOneAndUpdate(
+              { _id: req.params.id },
+              {
+                $set: {
+                  'profile.firstname': firstname,
+                  'profile.lastname': lastname,
+                  'profile.birthday': birthday,
+                  'profile.phone': phone,
+                  'profile.path': emp.profile.path,
+                  'profile.config': emp.profile.config,
+                  'position': position,
+                  'hire_date': hire_date,
+                  'department': department,
+                  'salary': salary,
+                  'job_name': job_name,
+                  'user': emp.user
+                }
+              },
+              { new: true, runValidators: true }
+            );
+            res.status(200).send(employee).end();
+            next();
+          }
+        });
+      }
+    });    
+    
   } catch (error) {
     return next(error.message);
   }
