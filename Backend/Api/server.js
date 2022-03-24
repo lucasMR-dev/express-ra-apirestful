@@ -12,6 +12,9 @@ const categoriesRouter = require("./Routes/categories");
 const brandsRouter = require("./Routes/brands");
 const familiesRouter = require("./Routes/families");
 const metricsRouter = require("./Routes/metrics");
+const clientsRouter = require("./Routes/clients");
+const employeesRouter = require("./Routes/employees");
+const departmentsRouter = require("./Routes/departments");
 const path = require("path");
 const server = express();
 
@@ -36,8 +39,8 @@ server.use(
 server.use(bodyParser.json());
 
 // Static Files
-server.use(version + "/public", express.static("Public/profiles"));
 server.use(version + "/assets", express.static("Public/assets"));
+server.use(version + "/Public/profiles", express.static("Public/profiles"));
 server.use(version + "/Public/products", express.static("Public/products"));
 server.use(version + "/Public/brands", express.static("Public/brands"));
 
@@ -50,6 +53,9 @@ server.use(version + "/categories", categoriesRouter);
 server.use(version + "/brands", brandsRouter);
 server.use(version + "/families", familiesRouter);
 server.use(version + "/metrics", metricsRouter);
+server.use(version + "/clients", clientsRouter);
+server.use(version + "/employees", employeesRouter);
+server.use(version + "/departments", departmentsRouter);
 
 // Index Page
 server.get(version + "/", function (req, res) {

@@ -49,7 +49,15 @@ router.get("", async (req, res, next) => {
   try {
     // Query Params
     const { filter, sort, range } = req.query;
-    if (filter && sort && range) {
+    let checkFilter = Object.keys(JSON.parse(filter)).toString();
+    if (checkFilter.length <= 2 && !sort && !range) {
+      let filtro = JSON.parse(filter);
+      let id = filtro.id.toString();
+      const data = await Brand.find({_id: id});
+      res.status(200).send(data).end();
+      next();
+    }
+    else if (filter && sort && range) {
       const data = await queryFilters.brandsFiltersAndSort(filter, sort, range);
       const countFilter = Object.keys(data.brands).length;
       const count = await Brand.countDocuments();
@@ -95,8 +103,7 @@ router.get("/:id", async (req, res, next) => {
     } else {
       await appTrack.metricTracking(name);
     }
-    res.send(brand);
-    res.end();
+    res.send(brand).end();
     next();
   } catch (error) {
     return next(error.message);

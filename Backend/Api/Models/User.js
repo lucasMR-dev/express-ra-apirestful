@@ -18,8 +18,8 @@ const UserSchema = new mongoose.Schema({
         required: true
     },
     access_type: {
-        type: String,
-        default: 'user'
+        type: Number,
+        default: 0
     },
     isActive: {
         type: Boolean,

@@ -20,6 +20,9 @@ import {
   useQuery,
   Loading,
   Error,
+  usePermissions,
+  Toolbar,
+  SaveButton
 } from "react-admin";
 import { useMediaQuery } from "@material-ui/core";
 
@@ -31,9 +34,10 @@ const CategoryFilter = (props) => (
   </Filter>
 );
 
-export const CategoryList = ({ permissions, ...props }) => {
+export const CategoryList = ({...props }) => {
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  return (
+  const { loaded, permissions } = usePermissions();
+  return loaded ? (
     <List
       {...props}
       filters={<CategoryFilter />}
@@ -43,19 +47,19 @@ export const CategoryList = ({ permissions, ...props }) => {
         <SimpleList
           primaryText={(record) => record.name}
           secondaryText={(record) => record.family.name}
-          linkType={permissions === "admin" ? "edit" : "show"}
+          linkType={permissions.includes('manager') ? "edit" : "show"}
         />
       ) : (
         <Datagrid>
           <TextField source="id" />
           <TextField source="name" label="Name" />
           <ChipField source="family.name" label="Family" />
-          {permissions === "admin" ? <EditButton /> : null}
-          {permissions === "admin" ? <DeleteButton /> : null}
+          <EditButton />
+          {permissions.includes('manager') || permissions.includes('supervisor') ? <DeleteButton /> : null}
         </Datagrid>
       )}
     </List>
-  );
+  ) : null;
 };
 
 export const CategoryShow = (props) => (
@@ -66,6 +70,18 @@ export const CategoryShow = (props) => (
     </SimpleShowLayout>
   </Show>
 );
+
+const CustomToolbar = (props) => {
+  const { loaded, permissions } = usePermissions();
+  return loaded ? (
+    <>
+      <Toolbar {...props}>
+        <SaveButton />
+        {permissions.includes('manager') ? <DeleteButton style={{marginLeft: "auto"}} /> : null}
+      </Toolbar>
+    </>
+  ) : null;
+};
 
 export const CategoryEdit = (props) => {
   const payload = {
@@ -84,8 +100,8 @@ export const CategoryEdit = (props) => {
   if (!data) return null;
 
   return (
-    <Edit {...props}>
-      <SimpleForm>
+    <Edit {...props} actions={false}>
+      <SimpleForm toolbar={<CustomToolbar />}>
         <TextInput disabled source="id" />
         <TextInput source="name" />
         <SelectInput

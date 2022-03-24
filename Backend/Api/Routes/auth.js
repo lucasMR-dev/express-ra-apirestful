@@ -25,17 +25,10 @@ router.post('/register', (req, res, next) => {
             user.password = hash;
             //Save user
             try {
-                const newUser = await user.save().then( async () => {
-                    const profile = new Profile({
-                        firstname: user.username,
-                        lastname: '',
-                        birthday: '',
-                        user: newUser._id
-                    });
-                    const newProfile = await profile.save();
-                    res.send(newProfile).end();
+                await user.save().then(() => {
+                    res.send(user).end();
                     next();
-                }).catch ( () => {
+                }).catch(() => {
                     res.status(403).json({ "Error": { "message": "Not allowed" } }).end();
                     next();
                 });
@@ -49,9 +42,9 @@ router.post('/register', (req, res, next) => {
 
 // Login
 router.post('/login', async (req, res, next) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     try {
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (user) {
             const active = user.isActive;
             // Match password
@@ -94,7 +87,14 @@ router.post('/refresh', async (req, res, next) => {
     const { tokenWeb, user } = req.body;
     try {
         const userObj = await User.findOne({ _id: user });
-        const oldToken = jwt.verify(tokenWeb, config.JWT_SECRET, { ignoreExpiration: true });
+        const oldToken = jwt.verify(tokenWeb, config.JWT_SECRET, (err, result) => {
+            if (err) {
+                res.status(404).send("Token Expired").end();
+            }
+            else {
+                return result
+            }
+        });
         delete oldToken.exp;
         delete oldToken.iat;
         delete oldToken.sub;
@@ -105,8 +105,7 @@ router.post('/refresh', async (req, res, next) => {
         });
         const { iat, exp, sub } = jwt.decode(token);
         // API RESPONSE JWT
-        res.send({ iat, exp, sub, token });
-        res.end();
+        res.send({ iat, exp, sub, token }).end();
         next();
     }
     catch (err) {
