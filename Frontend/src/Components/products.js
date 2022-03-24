@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import * as React from "react";
 import {
   Show,
@@ -29,11 +30,26 @@ import {
   SelectInput,
   useQuery,
   Loading,
-  Error
+  Error,
+  TabbedForm,
+  FormTab,
+  ReferenceInput,
+  Toolbar,
+  SaveButton,
+  usePermissions
 } from "react-admin";
+import { makeStyles } from '@material-ui/core/styles';
 import RichTextInput from "ra-input-rich-text";
 import { useMediaQuery, Avatar, Box } from "@material-ui/core";
 import Aside from '../Components/products/aside';
+
+const customStyles = makeStyles(theme => ({
+  image: {
+    width: 200,
+    height: 200,
+  },
+  inlineBlock: { display: 'inline-flex', marginRight: '1rem' },
+}));
 
 const ProductFilter = (props) => (
   <Filter {...props}>
@@ -43,9 +59,11 @@ const ProductFilter = (props) => (
   </Filter>
 );
 
-export const ProductList = ({ permissions, ...props }) => {
+export const ProductList = ({ ...props }) => {
+  const imageFieldClasses = customStyles();
+  const { loaded, permissions } = usePermissions();
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  return (
+  return loaded ? (
     <List {...props} filters={<ProductFilter />}>
       {isSmall ? (
         <SimpleList
@@ -59,7 +77,7 @@ export const ProductList = ({ permissions, ...props }) => {
       ) : (
         <Box display="flex">
           <Aside />
-          <Datagrid style={{ width: "auto" }}>
+          <Datagrid expand={ProductShow} style={{ width: "auto" }}>
             <TextField source="name" />
             <RichTextField source="shortDetails" />
             <TextField source="stock" />
@@ -74,28 +92,58 @@ export const ProductList = ({ permissions, ...props }) => {
               options={{ style: "currency", currency: "CPL" }}
             />
             <ChipField source="colorAvailable" label="Colors" />
-            <ImageField source="pictures[0].small" label="Pictures" />
-            {permissions === "admin" ? <EditButton /> : null}
-            {permissions === "admin" ? <DeleteButton /> : null}
+            <ImageField classes={imageFieldClasses} source="pictures[0].small" label="Pictures" />
+            <EditButton />
+            {permissions.includes("manager") || permissions.includes("supervisor") ? <DeleteButton /> : null}
           </Datagrid>
         </Box>
       )}
     </List>
-  );
+  ) : null;
 };
 
-export const ProductShow = (props) => (
-  <Show {...props}>
-    <SimpleShowLayout>
-      <TextField source="name" />
-      <TextField source="brand.name" label="Brand" />
-      <ImageField source="pictures[0].small" label="Pictures" />
-      <ChipField source="colorAvailable" />
-    </SimpleShowLayout>
-  </Show>
-);
+export const ProductShow = ({ permissions, ...props }) => {
+  const classes = customStyles();
+  const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  return (
+    <Show {...props}>
+      {isSmall ? (
+        <SimpleShowLayout>
+          <TextField source="name" />
+          <TextField source="brand.name" label="Brand" />
+          <ImageField source="pictures[0].small" label="Pictures" />
+          <ChipField source="colorAvailable" />
+        </SimpleShowLayout>
+      ) : (
+        <SimpleShowLayout>
+          <TextField source="name" />
+          <TextField source="brand.name" label="Brand" />
+          <div className={classes.inlineBlock}>
+            <ImageField source="pictures[0].small" label="Pictures" />
+            <ImageField source="pictures[0].big" label="" />
+          </div>
+          <RichTextField source="description" />
+        </SimpleShowLayout>
+      )}
+    </Show>
+  )
+};
 
-export const ProductEdit = (props) => {
+const CustomToolbar = (props) => {
+  const { loaded, permissions } = usePermissions();
+  return loaded ? (
+    <>
+      <Toolbar {...props}>
+        <SaveButton />
+        {permissions.includes('manager') ? <DeleteButton style={{marginLeft: "auto"}} /> : null}
+      </Toolbar>
+    </>
+  ) : null;
+};
+
+export const ProductEdit = ({ ...props }) => {
+  const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const classes = customStyles();
   const payload = {
     filter: {},
     pagination: { page: 1, perPage: 10 },
@@ -114,27 +162,101 @@ export const ProductEdit = (props) => {
 
   return (
     <Edit {...props}>
-      <SimpleForm>
-        <TextInput disabled source="id" />
-        <TextInput disabled source="sku" />
-        <CheckboxGroupInput
-          source="categories"
-          choices={data}
-          optionValue="id"
-        />
-        <NumberInput source="price" />
-        <NumberInput source="salePrice" />
-        <NumberInput source="discount" />
-        <BooleanInput source="newPro" />
-        <BooleanInput source="sale" />
-        <RichTextInput source="description" />
-        <TextInput source="colorAvailable" />
-      </SimpleForm>
+      {isSmall ? (
+        <SimpleForm>
+          <TextInput disabled source="id" />
+          <TextInput disabled source="sku" />
+          <CheckboxGroupInput
+            source="categories"
+            choices={data}
+            optionValue="id"
+          />
+          <BooleanInput source="newPro" />
+          <BooleanInput source="sale" />
+          <NumberInput source="price" />
+          <NumberInput source="salePrice" />
+          <NumberInput source="discount" />
+          <NumberInput source="stock" />
+          <RichTextInput source="shortDetails" />
+          <RichTextInput source="description" />
+          <div className={classes.inlineBlock}>
+            <ImageField source="pictures[0].small" label="First" alt="small" />
+            <ImageField source="pictures[0].big" label="Last" alt="big" />
+          </div>
+          <ImageInput
+            source="new_pictures"
+            label="Pictures"
+            accept="image/*"
+            multiple={true}
+          >
+            <ImageField source="src" title="title" />
+          </ImageInput>
+          <ArrayInput source="tags">
+            <SimpleFormIterator>
+              <TextInput />
+            </SimpleFormIterator>
+          </ArrayInput>
+          <TextInput source="colorAvailable" />
+        </SimpleForm>
+      ) : (
+        <TabbedForm toolbar={<CustomToolbar />}>
+          <FormTab label="Info">
+            <TextInput disabled source="id" />
+            <TextInput disabled source="sku" />
+            <ReferenceInput
+              source="brand"
+              reference="brands"
+              link={false}
+            >
+              <SelectInput optionText="name" optionValue="id" />
+            </ReferenceInput>
+            <CheckboxGroupInput
+              source="categories"
+              choices={data}
+              optionValue="id"
+            />
+          </FormTab>
+          <FormTab label="Inventory" path="/inventory">
+            <BooleanInput source="newPro" />
+            <BooleanInput source="sale" />
+            <NumberInput source="price" />
+            <NumberInput source="salePrice" />
+            <NumberInput source="discount" />
+            <NumberInput source="stock" />
+          </FormTab>
+          <FormTab label="Text" path="/product_info">
+            <RichTextInput source="shortDetails" />
+            <RichTextInput source="description" />
+          </FormTab>
+          <FormTab label="Images" path="/product_pictures">
+            <div className="row">
+              <ImageField source="pictures[0].small" label="First" alt="small" />
+              <ImageField source="pictures[0].big" label="Last" alt="big" />
+            </div>
+            <ImageInput
+              source="new_pictures"
+              label="Pictures"
+              accept="image/*"
+              multiple={true}
+            >
+              <ImageField source="src" title="title" />
+            </ImageInput>
+          </FormTab>
+          <FormTab label="Others" path="/misc">
+            <ArrayInput source="tags">
+              <SimpleFormIterator>
+                <TextInput />
+              </SimpleFormIterator>
+            </ArrayInput>
+            <TextInput source="colorAvailable" />
+          </FormTab>
+        </TabbedForm>
+      )}
     </Edit>
-  )
+  );
 };
 
-export const ProductCreate = (props) => (
+export const ProductCreate = ({ permissions, ...props }) => (
   <Create {...props}>
     <SimpleForm>
       <TextInput source="name" required />

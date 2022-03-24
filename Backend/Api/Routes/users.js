@@ -118,8 +118,7 @@ router.patch("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) 
 router.delete("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   try {
     const user = await User.findOneAndDelete({ _id: req.params.id });
-    res.send(user);
-    res.end();
+    res.send(user).end();
     next();
   } catch (err) {
     return next(err.message);

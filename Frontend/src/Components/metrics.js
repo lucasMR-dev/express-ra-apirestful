@@ -5,6 +5,63 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { useMediaQuery } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import { Link } from "react-router-dom";
+import { stringify } from "query-string";
+
+const LinkToRelatedProducts = ({ record }) => {
+  return record ? (
+    <Button
+      size="small"
+      color="inherit"
+      component={Link}
+      to={{
+        pathname: "/products",
+        search: stringify({
+          filter: JSON.stringify({ name: record }),
+        }),
+      }}
+    >
+      {record}
+    </Button>
+  ) : null;
+};
+
+const LinkToRelatedCategory = ({ record }) => {
+  return record ? (
+    <Button
+      size="small"
+      color="inherit"
+      component={Link}
+      to={{
+        pathname: "/categories",
+        search: stringify({
+          filter: JSON.stringify({ name: record }),
+        }),
+      }}
+    >
+      {record}
+    </Button>
+  ) : null;
+};
+
+const LinkToRelatedBrand = ({ record }) => {
+  return record ? (
+    <Button
+      size="small"
+      color="inherit"
+      component={Link}
+      to={{
+        pathname: "/brands",
+        search: stringify({
+          filter: JSON.stringify({ name: record }),
+        }),
+      }}
+    >
+      {record}
+    </Button>
+  ) : null;
+};
 
 const DashboardMetrics = () => {
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -35,49 +92,49 @@ const DashboardMetrics = () => {
             <CardContent>
               <Grid container direction="column">
                 <Grid item xs={12} md={12} lg={12}>
-                  <Typography color="white" variant="subtitle1" align="center">
+                  <Typography color="inherit" variant="subtitle1" align="center">
                     Top Brands
                   </Typography>
                   {brands.map((brand) => (
-                    <Typography color="white" variant="subtitle2" align="left">
+                    <Typography color="inherit" variant="subtitle2" key={brand.id} align="left">
                       {brand.name}
                     </Typography>
                   ))}
                 </Grid>
-                </Grid>
-              </CardContent>
+              </Grid>
+            </CardContent>
           </Card>
           <Card>
             <CardContent>
               <Grid container direction="column">
                 <Grid item xs={12} md={12} lg={12}>
-                  <Typography color="white" variant="subtitle1" align="center">
+                  <Typography color="inherit" variant="subtitle1" align="center">
                     Top Categories
                   </Typography>
                   {categories.map((category) => (
-                    <Typography color="white" variant="subtitle2" align="left">
+                    <Typography color="inherit" variant="subtitle2" key={category.id} align="left">
                       {category.name}
                     </Typography>
                   ))}
                 </Grid>
-                </Grid>
-              </CardContent>
+              </Grid>
+            </CardContent>
           </Card>
           <Card>
             <CardContent>
               <Grid container direction="column">
                 <Grid item xs={12} md={12} lg={12}>
-                  <Typography color="white" variant="subtitle1" align="center">
+                  <Typography color="inherit" variant="subtitle1" align="center">
                     Top Products
                   </Typography>
                   {products.map((product) => (
-                    <Typography color="white" variant="subtitle2" align="left">
+                    <Typography color="inherit" variant="subtitle2" key={product.id} align="left">
                       {product.name}
                     </Typography>
                   ))}
                 </Grid>
-                </Grid>
-              </CardContent>
+              </Grid>
+            </CardContent>
           </Card>
         </Grid>
       ) : (
@@ -91,7 +148,7 @@ const DashboardMetrics = () => {
                 <Grid container>
                   <Grid item xs={8} md={8} lg={8}>
                     <Typography
-                      color="white"
+                      color="inherit"
                       variant="subtitle1"
                       align="center"
                     >
@@ -99,11 +156,12 @@ const DashboardMetrics = () => {
                     </Typography>
                     {brands.map((brand) => (
                       <Typography
-                        color="white"
+                        color="inherit"
                         variant="subtitle2"
                         align="left"
+                        key={brand.id}
                       >
-                        {brand.name}
+                        <LinkToRelatedBrand record={brand.name} />
                       </Typography>
                     ))}
                   </Grid>
@@ -123,7 +181,7 @@ const DashboardMetrics = () => {
                 <Grid container>
                   <Grid item xs={8}>
                     <Typography
-                      color="white"
+                      color="inherit"
                       variant="subtitle1"
                       align="center"
                     >
@@ -131,11 +189,12 @@ const DashboardMetrics = () => {
                     </Typography>
                     {categories.map((category) => (
                       <Typography
-                        color="white"
+                        color="inherit"
                         variant="subtitle2"
                         align="left"
+                        key={category.id}
                       >
-                        {category.name}
+                        <LinkToRelatedCategory record={category.name} />
                       </Typography>
                     ))}
                   </Grid>
@@ -155,7 +214,7 @@ const DashboardMetrics = () => {
                 <Grid container>
                   <Grid item xs={8}>
                     <Typography
-                      color="white"
+                      color="inherit"
                       variant="subtitle1"
                       align="center"
                     >
@@ -163,11 +222,12 @@ const DashboardMetrics = () => {
                     </Typography>
                     {products.map((product) => (
                       <Typography
-                        color="white"
+                        color="inherit"
                         variant="subtitle2"
+                        key={product.id}
                         align="left"
                       >
-                        {product.name.slice(0, 12)}
+                        <LinkToRelatedProducts record={product.name.slice(0, 12)} />
                       </Typography>
                     ))}
                   </Grid>
