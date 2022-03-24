@@ -21,7 +21,6 @@ const RegisterDialog = () => {
     const notify = useNotify();
     const submitModal = e => {
         e.preventDefault();
-        // will call authProvider.login({ email, password })
         authProvider.register({ email, password, username, isActive, access_type })
             .then(() => {
                 notify("Register Success!, Please Log In");
@@ -44,6 +43,7 @@ const RegisterDialog = () => {
     const handleCloseClick = () => {
         setShowDialog(false);
     };
+
     return (
         <>
             <Button onClick={handleClick} color="secondary">
@@ -54,7 +54,7 @@ const RegisterDialog = () => {
                 open={showDialog}
                 onClose={handleCloseClick}
             >
-                <DialogTitle>Register User</DialogTitle>
+                <DialogTitle style={{textAlign: "center"}}>Register User</DialogTitle>
                 <DialogContent>
                     <Grid container>
                         <form id='modalForm' style={{ width: "100%" }}>
@@ -91,7 +91,6 @@ const RegisterDialog = () => {
                             <Grid container>
                                 <Grid item md={2}>
                                     <label htmlFor="username">Username: </label>
-
                                 </Grid>
                                 <Grid item md={10}>
                                     <input
@@ -109,7 +108,6 @@ const RegisterDialog = () => {
                                 <label htmlFor="access_type">Access Type: </label>
                                 <select name="access_type" value={access_type} onChange={e => setAccessType(e.target.value)}>
                                     <option value="">--</option>
-                                    <option value="0">App User</option>
                                     <option value="1">Administrator Account</option>
                                 </select>
                             </Grid>
@@ -123,7 +121,6 @@ const RegisterDialog = () => {
                                     required
                                     onChange={e => setisActive(e.target.checked)}
                                 />
-
                             </Grid>
                         </form>
                     </Grid>

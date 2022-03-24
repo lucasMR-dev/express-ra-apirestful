@@ -12,6 +12,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardHeader from '@material-ui/core/CardHeader';
 import RegisterDialog from './modal/register';
+import config from '../../Api/config';
 
 export const customLogin = ({theme, ...props}) => {
     const [email, setEmail] = useState('');
@@ -21,7 +22,6 @@ export const customLogin = ({theme, ...props}) => {
    
     const submit = e => {       
         e.preventDefault();
-        // will call authProvider.login({ email, password })
         login({ email, password }).catch((res) => {
             notify(res.message);
         });
@@ -54,7 +54,7 @@ export const customLogin = ({theme, ...props}) => {
                                     />
                                     <Button color='primary' type='submit'>Enviar</Button>
                                 </Grid>
-                                {!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? (
+                                { config.env.NODE_ENV === 'development' || config.env.NODE_ENV === 'dev' ? (
                                     <>
                                         <Divider light />
                                         <Grid item>
@@ -62,7 +62,6 @@ export const customLogin = ({theme, ...props}) => {
                                         </Grid>
                                     </>) : null
                                 }
-
                             </form>
                         </CardContent>
                     </Card>
