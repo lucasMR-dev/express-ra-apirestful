@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import * as React from 'react';
 import { useState } from 'react';
-import { useLogin, useNotify, Notification, defaultTheme } from 'react-admin';
+import { useLogin, useNotify, Notification } from 'react-admin';
+import { defaultTheme } from "react-admin";
 import { ThemeProvider } from '@material-ui/styles';
 import { createTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -26,12 +27,19 @@ export const customLogin = ({theme, ...props}) => {
             notify(res.message);
         });
     };
+    
+    const loginTheme = createTheme({
+        ...defaultTheme,
+        overrides: {           
+        }
+    });
 
     return (
-            <ThemeProvider theme={createTheme(defaultTheme)}>
-                <Grid container style={{ textAlign: "center", marginTop: 100, marginBottom: 100 }} justifyContent="center">
-                    <Card style={{ verticalAlign: "middle", alignItems: "center" }}>
-                        <CardHeader style={{ color: "Blue", textTransform: "uppercase" }} title="Custom Login Page" />
+            <ThemeProvider theme={loginTheme}>
+                <>
+                <Grid container justifyContent="center">
+                    <Card style={{ textAlign: "center", verticalAlign: "middle", alignItems: "center",  marginTop: 100, marginBottom: 100}}>
+                        <CardHeader style={{ color: 'darkblue', textTransform: "uppercase" }} title="Custom Login Page" />
                         <CardMedia component="img" style={{ height: 150, width: 150, display: "inline" }} image="/logo192.png" />
                         <CardContent>
                             <form id='loginForm' onSubmit={submit}>
@@ -60,13 +68,15 @@ export const customLogin = ({theme, ...props}) => {
                                         <Grid item>
                                             <RegisterDialog />
                                         </Grid>
-                                    </>) : null
+                                    </>
+                                    ) : null
                                 }
                             </form>
                         </CardContent>
                     </Card>
                 </Grid>
                 <Notification />
+                </>
             </ThemeProvider>
     );
 };

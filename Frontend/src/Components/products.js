@@ -36,7 +36,8 @@ import {
   ReferenceInput,
   Toolbar,
   SaveButton,
-  usePermissions
+  usePermissions,
+  ReferenceField
 } from "react-admin";
 import { makeStyles } from '@material-ui/core/styles';
 import RichTextInput from "ra-input-rich-text";
@@ -91,7 +92,7 @@ export const ProductList = ({ ...props }) => {
               source="salePrice"
               options={{ style: "currency", currency: "CPL" }}
             />
-            <ChipField source="colorAvailable" label="Colors" />
+            <ChipField source="colorAvailable" />
             <ImageField classes={imageFieldClasses} source="pictures[0].small" label="Pictures" />
             <EditButton />
             {permissions.includes("manager") || permissions.includes("supervisor") ? <DeleteButton /> : null}
@@ -109,15 +110,20 @@ export const ProductShow = ({ permissions, ...props }) => {
     <Show {...props}>
       {isSmall ? (
         <SimpleShowLayout>
+          <TextField source="sku" />
           <TextField source="name" />
-          <TextField source="brand.name" label="Brand" />
+          <ReferenceField source="brand" reference="brands" link="show">
+            <TextField source="name" />
+          </ReferenceField>
           <ImageField source="pictures[0].small" label="Pictures" />
           <ChipField source="colorAvailable" />
         </SimpleShowLayout>
       ) : (
         <SimpleShowLayout>
-          <TextField source="name" />
-          <TextField source="brand.name" label="Brand" />
+          <TextField source="sku" />
+          <ReferenceField source="brand" reference="brands" link="show">
+            <TextField source="name" />
+          </ReferenceField>
           <div className={classes.inlineBlock}>
             <ImageField source="pictures[0].small" label="Pictures" />
             <ImageField source="pictures[0].big" label="" />
@@ -135,7 +141,7 @@ const CustomToolbar = (props) => {
     <>
       <Toolbar {...props}>
         <SaveButton />
-        {permissions.includes('manager') ? <DeleteButton style={{marginLeft: "auto"}} /> : null}
+        {permissions.includes('manager') ? <DeleteButton style={{ marginLeft: "auto" }} /> : null}
       </Toolbar>
     </>
   ) : null;
@@ -166,6 +172,13 @@ export const ProductEdit = ({ ...props }) => {
         <SimpleForm>
           <TextInput disabled source="id" />
           <TextInput disabled source="sku" />
+          <ReferenceInput
+            source="brand"
+            reference="brands"
+            link={false}
+          >
+            <SelectInput optionText="name" optionValue="id" />
+          </ReferenceInput>
           <CheckboxGroupInput
             source="categories"
             choices={data}

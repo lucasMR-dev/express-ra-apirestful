@@ -9756,10 +9756,10 @@
     "parchment" "^1.1.4"
     "quill-delta" "^3.6.2"
 
-"ra-core@^3.14.0", "ra-core@^3.17.2", "ra-core@^3.19.7":
-  "integrity" "sha512-ar85cQ7vtIIrb6Ijj8Om+IkuB4i4uuoMcfvDgLxaNOEyImq+n3osVHi93FkZKpdZAHQ9qKnkN83SODhoRdaGfg=="
-  "resolved" "https://registry.npmjs.org/ra-core/-/ra-core-3.19.7.tgz"
-  "version" "3.19.7"
+"ra-core@^3.14.0", "ra-core@^3.17.2", "ra-core@^3.19.10", "ra-core@^3.19.7":
+  "integrity" "sha512-jOPh5PVH9WKu217tiL4ef2+V2OMkf5/wjkPw4xLemKSydKYJG5FyByzL5QE/3k7UkG6TsnJWBVaf0TOhCm5SZw=="
+  "resolved" "https://registry.npmjs.org/ra-core/-/ra-core-3.19.10.tgz"
+  "version" "3.19.10"
   dependencies:
     "classnames" "~2.3.1"
     "date-fns" "^1.29.0"
@@ -9803,12 +9803,19 @@
     "prop-types" "^15.6.0"
     "quill" "~1.3.6"
 
-"ra-language-english@^3.19.7":
-  "integrity" "sha512-iqSWXaAOafzrh8uPlJG9Ey1fCCFFnGajynnHlZXh+E10pZ/ZDlIVZDpd7GAY1BxkKh5GPYRqNk+kDxCwXAG3fQ=="
-  "resolved" "https://registry.npmjs.org/ra-language-english/-/ra-language-english-3.19.7.tgz"
-  "version" "3.19.7"
+"ra-language-english@^3.19.10", "ra-language-english@^3.19.7":
+  "integrity" "sha512-SE6MRdxXjg9yL+baE0WGW5pTd6mEwWpHSGnAm3e3VTH8pqXzHDCOI7JieHYWfKz1uSQUaHYqRJ5hxVKiBA85UA=="
+  "resolved" "https://registry.npmjs.org/ra-language-english/-/ra-language-english-3.19.10.tgz"
+  "version" "3.19.10"
   dependencies:
-    "ra-core" "^3.19.7"
+    "ra-core" "^3.19.10"
+
+"ra-language-french@^3.19.10":
+  "integrity" "sha512-S17UGfCDxVuOEIrzg1FcmRMqqt6btFgar/vpWbzrhReqCzR7Gnw0DE5FzwXm+R9xpshBXCi76IQTNnsMqeqMjg=="
+  "resolved" "https://registry.npmjs.org/ra-language-french/-/ra-language-french-3.19.10.tgz"
+  "version" "3.19.10"
+  dependencies:
+    "ra-core" "^3.19.10"
 
 "ra-ui-materialui@^3.17.2", "ra-ui-materialui@^3.19.7":
   "integrity" "sha512-Ojuh5hGpwFnKxZldUCc4uTN56QQtkWTU8bqKkp9Jx9bcFhcilBCv5knD+/ApfkrQan2bKTSwR2gS1F5LiC4hAg=="

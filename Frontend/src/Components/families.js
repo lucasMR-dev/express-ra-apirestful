@@ -39,7 +39,7 @@ export const FamilyList = ({ ...props }) => {
             ) : (
                 <Datagrid>
                     <TextField source="id" />
-                    <TextField source="name" label="Family" />
+                    <TextField source="name" />
                     <EditButton />
                     {permissions.includes('manager') || permissions.includes('supervisor') ? <DeleteButton /> : null}
                 </Datagrid>

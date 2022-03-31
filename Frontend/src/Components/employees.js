@@ -196,11 +196,11 @@ export const EmployeeEdit = (props) => (
     <Edit {...props}>
         <TabbedForm>
             <FormTab label="Profile">
-                <TextInput source="profile.firstname" label="Firstname" />
-                <TextInput source="profile.lastname" label="Lastname" />
-                <DateInput source="profile.birthday" label="Birthday" />
-                <TextInput source="profile.phone" label="Phone" />
-                <ImageField source="profile.path" alt="picture" label="Picture" />
+                <TextInput source="profile.firstname" />
+                <TextInput source="profile.lastname" />
+                <DateInput source="profile.birthday" />
+                <TextInput source="profile.phone"  />
+                <ImageField source="profile.path" alt="picture" />
             </FormTab>
             <FormTab label="Company">
                 <SelectInput choices={employee_position_choices} source="position" required />
@@ -216,9 +216,9 @@ export const EmployeeEdit = (props) => (
                 <NumberInput source="salary" />
             </FormTab>
             <FormTab label="Account">
-                <TextInput source="user.username" label="Username" />
-                <TextInput type="email" source="user.email" label="Email" />
-                <BooleanInput source="user.isActive" label="Is Active?" />
+                <TextInput source="user.username" />
+                <TextInput type="email" source="user.email" />
+                <BooleanInput source="user.isActive" />
             </FormTab>
         </TabbedForm>
     </Edit>

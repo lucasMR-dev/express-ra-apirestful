@@ -46,7 +46,7 @@ const RegisterDialog = () => {
 
     return (
         <>
-            <Button onClick={handleClick} color="secondary">
+            <Button onClick={handleClick}>
                 Click here to Register
             </Button>
             <Dialog

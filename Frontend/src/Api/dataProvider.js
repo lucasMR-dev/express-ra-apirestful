@@ -320,7 +320,8 @@ const dataProvider = {
     });
     return { data: update };
   },
-  updateTheme: async (params) => {
+  updateSettings: async (params) => {
+    localStorage.removeItem('locale');
     const { json } = await httpClient(`${apiUrl}/employees/config/${params.data.id}`, {
       method: "PATCH",
       body: JSON.stringify({ profile: { config: { ...params.data.config } } }),

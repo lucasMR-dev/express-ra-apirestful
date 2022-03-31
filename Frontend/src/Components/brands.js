@@ -87,7 +87,7 @@ export const LinkToRelatedProducts = ({ record }) => {
       className={classes.link}
     >
       <ProductIcon className={classes.icon} />
-      {translate("Products")}
+      {translate("resources.products.name", { smart_count: 2})}
     </Button>
   ) : null;
 };
@@ -120,8 +120,8 @@ export const BrandGrid = ({ ...props }) => {
 const BrandFilter = (props) => (
   <Filter {...props}>
     <SearchInput source="q" alwaysOn />
-    <TextInput label="Name" source="name" defaultValue="" />
-    <TextInput label="Categories" source="categories" defaultValue="" />
+    <TextInput source="name" defaultValue="" />
+    <TextInput source="categories" defaultValue="" />
   </Filter>
 );
 
@@ -190,7 +190,7 @@ export const BrandEdit = (props) => {
         <SelectInput source="partnerStatus" choices={partnerStatus_choices} />
         <BooleanInput source="active" />
         <ImageField source="logo" title="title" />
-        <ImageInput source="newlogo" label="New Logo?" accept="image/*">
+        <ImageInput source="newlogo" accept="image/*">
           <ImageField source="src" title="title" />
         </ImageInput>
         <CheckboxGroupInput
@@ -214,13 +214,12 @@ export const BrandCreate = (props) => (
       />
       <BooleanInput source="active" defaultValue={false} />
       <ReferenceArrayInput
-        label="Categories"
         source="categories"
         reference="categories"
       >
         <CheckboxGroupInput optionText="name" optionValue="id" />
       </ReferenceArrayInput>
-      <ImageInput source="logo" label="Brand Logo" accept="image/*" required>
+      <ImageInput source="logo" accept="image/*" required>
         <ImageField source="src" title="title" />
       </ImageInput>
     </SimpleForm>

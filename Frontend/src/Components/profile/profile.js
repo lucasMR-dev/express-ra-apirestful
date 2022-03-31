@@ -1,15 +1,35 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { ImageInput, TextInput, SimpleForm, useNotify, useGetIdentity, useDataProvider, SaveContextProvider, DateInput, ImageField  } from 'react-admin';
+import React, { useCallback, useMemo, useState, createContext, useContext } from 'react';
+import { ImageInput, TextInput, SimpleForm, useNotify, useGetIdentity, useDataProvider, SaveContextProvider, DateInput, ImageField, useRedirect  } from 'react-admin';
 
+const ProfileContext = createContext();
 
+export const ProfileProvider = ({ children }) => {
+  const [profileVersion, setProfileVersion] = useState(0);
+  const context = useMemo(
+    () => ({
+      profileVersion,
+      refreshProfile: () =>
+        setProfileVersion((currentVersion) => currentVersion + 1)
+      }),
+    [profileVersion]
+  );
+
+  return (
+    <ProfileContext.Provider value={context}>
+      {children}
+    </ProfileContext.Provider>
+  );
+};
+
+export const useProfile = () => useContext(ProfileContext);
 
 export const ProfileEdit = ({ staticContext, ...props }) => {
   const dataProvider = useDataProvider();
   const notify = useNotify();
   const [saving, setSaving] = useState();  
-
+  const { refreshProfile } = useProfile();
   const {loaded, identity } = useGetIdentity();
-
+  const redirect = useRedirect();
   const handleSave = useCallback((values) => {
     setSaving(true);
     dataProvider.updateUserProfile(
@@ -20,6 +40,8 @@ export const ProfileEdit = ({ staticContext, ...props }) => {
           notify("Your profile has been updated", "info", {
             _: "Your profile has been updated"
           });
+          refreshProfile();
+          redirect('/')
         },
         onFailure: () => {
           setSaving(false);
@@ -34,7 +56,7 @@ export const ProfileEdit = ({ staticContext, ...props }) => {
         }
       }
     );
-  }, [dataProvider, notify]);
+  }, [dataProvider, notify, refreshProfile, redirect]);
 
   const saveContext = useMemo(() => ({
     save: handleSave,

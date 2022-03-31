@@ -60,13 +60,17 @@ const authProvider = {
         }
         else {
           localStorage.setItem("token", res.token);
+          localStorage.setItem("userLogged", res.sub);
           localStorage.setItem("expiresIn", res.exp);
+          return Promise.resolve();
         }
       } catch (error) {
         return Promise.reject(error);
       }
     }
-    return Promise.resolve();
+    else {
+      return Promise.reject();
+    }
   },
   checkAuth: () => {
     return localStorage.getItem("token") ? Promise.resolve() : Promise.reject();
@@ -100,7 +104,9 @@ const authProvider = {
         const phone = res[0].profile.phone;
         const birthday = res[0].profile.birthday;
         const config = res[0].profile.config;
-        return Promise.resolve({ id, fullName, avatar, birthday, phone, config });        
+        const locale = config.language;
+        localStorage.setItem('locale', locale);
+        return Promise.resolve({ id, fullName, avatar, birthday, phone, config });
       } catch (error) {
         return Promise.reject(error);
       }

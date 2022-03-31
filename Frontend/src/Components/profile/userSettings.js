@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { SimpleForm, useNotify, useGetIdentity, useDataProvider, SaveContextProvider, SelectInput, BooleanInput, TextInput } from 'react-admin';
-
+import React, { useCallback, useMemo, useState  } from 'react';
+import { SimpleForm, useNotify, useGetIdentity, useDataProvider, SaveContextProvider, SelectInput, BooleanInput, TextInput, useSetLocale, useRedirect } from 'react-admin';
 
 const language_choices = [
     { id: "es-ES", name: "Espanol" },
@@ -12,27 +11,31 @@ const language_choices = [
 const color_choices = [
     { id: "red", name: "Red" },
     { id: "blue", name: "Blue" },
-    { id: "green", name: "Green" }
+    { id: "green", name: "Green" },
+    { id: "orange", name: "Orange" },
+    { id: "cyan", name: "Cyan" }
 ];
-
 
 export const UserSettings = ({ staticContext, ...props }) => {
     const dataProvider = useDataProvider();
     const notify = useNotify();
     const [saving, setSaving] = useState();
-
+    const setLocale = useSetLocale();
     const { identity } = useGetIdentity();
+    const redirect = useRedirect();
 
     const handleSave = useCallback((values) => {
         setSaving(true);
-        dataProvider.updateTheme(
-            {data: values},
+        dataProvider.updateSettings(
+            { data: values },
             {
-                onSuccess: () => {
+                onSuccess: (data) => {
                     setSaving(false);
                     notify("Your config has been updated", "info", {
                         _: "Your config has been updated"
                     });
+                    setLocale(data.data.profile.config.language);
+                    redirect('/');
                 },
                 onFailure: () => {
                     setSaving(false);
@@ -46,7 +49,7 @@ export const UserSettings = ({ staticContext, ...props }) => {
                 }
             }
         );
-    }, [dataProvider, notify]);
+    }, [dataProvider, notify, setLocale, redirect]);
 
     const saveContext = useMemo(() => ({
         save: handleSave,
@@ -56,7 +59,7 @@ export const UserSettings = ({ staticContext, ...props }) => {
     return (
         <SaveContextProvider value={saveContext}>
             <SimpleForm save={handleSave} record={identity ? identity : {}}>
-                <TextInput style={{display: 'none'}} source="id" />
+                <TextInput style={{ display: 'none' }} source="id" />
                 <SelectInput label="Language" source="config.language" choices={language_choices} />
                 <BooleanInput label="Dark Theme" source="config.darkTheme" />
                 <SelectInput label="Color" source="config.color" choices={color_choices} />

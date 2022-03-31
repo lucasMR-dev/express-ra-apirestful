@@ -52,8 +52,8 @@ export const CategoryList = ({...props }) => {
       ) : (
         <Datagrid>
           <TextField source="id" />
-          <TextField source="name" label="Name" />
-          <ChipField source="family.name" label="Family" />
+          <TextField source="name" />
+          <ChipField source="family.name" />
           <EditButton />
           {permissions.includes('manager') || permissions.includes('supervisor') ? <DeleteButton /> : null}
         </Datagrid>
@@ -106,7 +106,6 @@ export const CategoryEdit = (props) => {
         <TextInput source="name" />
         <SelectInput
           source="family.id"
-          label="Family"
           optionValue="id"
           choices={data}
         />
