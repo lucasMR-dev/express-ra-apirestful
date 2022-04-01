@@ -1,28 +1,31 @@
-import React, { useCallback, useMemo, useState  } from 'react';
-import { SimpleForm, useNotify, useGetIdentity, useDataProvider, SaveContextProvider, SelectInput, BooleanInput, TextInput, useSetLocale, useRedirect } from 'react-admin';
-
-const language_choices = [
-    { id: "es-ES", name: "Espanol" },
-    { id: "en-EN", name: "English" },
-    { id: "fr-FR", name: "Frances" },
-    { id: "de-DE", name: "Deutch" }
-];
-
-const color_choices = [
-    { id: "red", name: "Red" },
-    { id: "blue", name: "Blue" },
-    { id: "green", name: "Green" },
-    { id: "orange", name: "Orange" },
-    { id: "cyan", name: "Cyan" }
-];
+import React, { useCallback, useMemo, useState } from 'react';
+import { SimpleForm, useNotify, useGetIdentity, useDataProvider, SaveContextProvider, SelectInput, BooleanInput, TextInput, useSetLocale, useRedirect, useTranslate } from 'react-admin';
 
 export const UserSettings = ({ staticContext, ...props }) => {
     const dataProvider = useDataProvider();
+    const translate = useTranslate();
     const notify = useNotify();
     const [saving, setSaving] = useState();
     const setLocale = useSetLocale();
     const { identity } = useGetIdentity();
     const redirect = useRedirect();
+
+    const language_choices = [
+        { id: "es-ES", name: translate("languages.Espanol") },
+        { id: "en-EN", name: translate("languages.English") },
+        { id: "fr-FR", name: translate("languages.Frances") },
+        { id: "de-DE", name: translate("languages.Deutch") }
+    ];
+
+    const color_choices = [
+        { id: "red", name: translate("colors.Red") },
+        { id: "blue", name: translate("colors.Blue") },
+        { id: "green", name: translate("colors.Green") },
+        { id: "orange", name: translate("colors.Orange") },
+        { id: "cyan", name: translate("colors.Cyan") }
+    ];
+
+    const appVersion = parseInt(localStorage.getItem('version'));
 
     const handleSave = useCallback((values) => {
         setSaving(true);
@@ -35,6 +38,7 @@ export const UserSettings = ({ staticContext, ...props }) => {
                         _: "Your config has been updated"
                     });
                     setLocale(data.data.profile.config.language);
+                    localStorage.setItem('version', appVersion+1)
                     redirect('/');
                 },
                 onFailure: () => {
@@ -49,7 +53,7 @@ export const UserSettings = ({ staticContext, ...props }) => {
                 }
             }
         );
-    }, [dataProvider, notify, setLocale, redirect]);
+    }, [dataProvider, notify, setLocale, appVersion, redirect]);
 
     const saveContext = useMemo(() => ({
         save: handleSave,
@@ -60,9 +64,9 @@ export const UserSettings = ({ staticContext, ...props }) => {
         <SaveContextProvider value={saveContext}>
             <SimpleForm save={handleSave} record={identity ? identity : {}}>
                 <TextInput style={{ display: 'none' }} source="id" />
-                <SelectInput label="Language" source="config.language" choices={language_choices} />
-                <BooleanInput label="Dark Theme" source="config.darkTheme" />
-                <SelectInput label="Color" source="config.color" choices={color_choices} />
+                <SelectInput source="config.language" label={translate("resources.config.language")} choices={language_choices} />
+                <BooleanInput source="config.darkTheme" label={translate("resources.config.darkTheme")} />
+                <SelectInput source="config.color" label={translate("resources.config.color")} choices={color_choices} />
             </SimpleForm>
         </SaveContextProvider>
     );

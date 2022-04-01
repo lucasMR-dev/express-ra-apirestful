@@ -6,6 +6,19 @@ const CustomFrenchMessage = {
         rrhh: 'Ressources Humaines',
         warehouse: 'Dépot'
     },
+    languages: {
+        Espanol: 'Espagnol',
+        Deutch: 'Allemand',
+        English: 'Anglais',
+        Frances: 'Français'
+    },
+    colors: {
+        Red: 'Rouge',
+        Green: 'Verte',
+        Blue: 'Bleu',
+        Orange: 'Orange',
+        Cyan: 'Cyan'
+    },
     Categories: 'Catégories',
     Brands: 'Marques',
     resources: {
@@ -13,7 +26,10 @@ const CustomFrenchMessage = {
             name: 'Profil'
         },
         config: {
-            name: 'Configuration'
+            name: 'Configuration',
+            language: 'Langue',
+            darkTheme: 'Foncé Thème',
+            color: 'Couleur'
         },
         products: {
             name: 'Produit |||| Des Produits',
@@ -43,6 +59,12 @@ const CustomFrenchMessage = {
                     id: 'Famille',
                     name: 'Famille'
                 }
+            },
+            names: {
+                Mouses: 'Des Souris',
+                Motherboards: 'Cartes Mères',
+                Headsets: 'Casques',
+                "Graphics Cards": 'Cartes Graphiques'
             }
         },
         brands: {

@@ -80,11 +80,13 @@ const authProvider = {
     localStorage.removeItem("expiresIn");
     localStorage.removeItem("userLogged");
     localStorage.removeItem("permissions");
-    localStorage.removeItem("appConfig");
+    localStorage.removeItem("locale");
+    localStorage.removeItem("version");
     return Promise.resolve();
   },
   getIdentity: async () => {
     const profile = localStorage.getItem("userLogged");
+    const version = localStorage.getItem("version");
     if (profile !== null) {
       try {
         const query = {
@@ -106,6 +108,9 @@ const authProvider = {
         const config = res[0].profile.config;
         const locale = config.language;
         localStorage.setItem('locale', locale);
+        if (version == null) {
+          localStorage.setItem('version', 0);
+        }
         return Promise.resolve({ id, fullName, avatar, birthday, phone, config });
       } catch (error) {
         return Promise.reject(error);

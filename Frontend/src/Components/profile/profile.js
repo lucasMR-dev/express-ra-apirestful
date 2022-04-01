@@ -8,9 +8,11 @@ export const ProfileProvider = ({ children }) => {
   const context = useMemo(
     () => ({
       profileVersion,
-      refreshProfile: () =>
-        setProfileVersion((currentVersion) => currentVersion + 1)
-      }),
+      refreshProfile: () => {
+          setProfileVersion((currentVersion) => currentVersion + 1)
+      }
+      
+    }),
     [profileVersion]
   );
 

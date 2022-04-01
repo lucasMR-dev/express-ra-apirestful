@@ -8,7 +8,8 @@ import BusinessIcon from '@material-ui/icons/Business';
 import {
   FilterList,
   FilterListItem,
-  useGetList
+  useGetList,
+  useTranslate
 } from "react-admin";
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +43,7 @@ const Aside = () => {
   const brands = ListBrands();
   const categories = ListCategories();
   const classes = useStyles();
+  const translate = useTranslate();
   return (
     <Card className={classes.root}>
       <CardContent>
@@ -53,7 +55,7 @@ const Aside = () => {
             categories.data &&
             categories.ids.map((id) => (
               <FilterListItem
-                label={inflection.humanize(categories.data[id].name)}
+                label={translate(`resources.categories.names.${categories.data[id].name}`)}
                 key={categories.data[id].id}
                 value={{ categories: categories.data[id].name }}
               />

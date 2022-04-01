@@ -1,10 +1,10 @@
 import React from "react";
-import { UserMenu, MenuItemLink, useGetIdentity, Loading, useTranslate } from "react-admin";
+import { UserMenu, MenuItemLink, useGetIdentity, Loading, useTranslate, AppBar } from "react-admin";
 import ProfileIcon from "@material-ui/icons/People";
 import SettingsIcon from "@material-ui/icons/Settings";
-import { useProfile } from "../../Components/profile/profile";
+import { ProfileProvider, useProfile } from "../../Components/profile/profile";
 
-export const MyUserMenu = (props) => {
+const MyUserMenu = (props) => {
   const translate = useTranslate();
   const { profileVersion } = useProfile();
   const { loading } = useGetIdentity();
@@ -13,15 +13,23 @@ export const MyUserMenu = (props) => {
   ) : (
       <UserMenu key={profileVersion} {...props}>
         <MenuItemLink
-          to="/my-profile"
+          to="/profile"
           primaryText={translate('resources.profile.name')}
           leftIcon={<ProfileIcon />}
         />
         <MenuItemLink
-          to="/app-settings"
+          to="/settings"
           primaryText={translate('resources.config.name')}
           leftIcon={<SettingsIcon />}
         />
       </UserMenu>
   )
 };
+
+export const MyAppBar = (props) => {
+  return (
+        <ProfileProvider>
+          <AppBar {...props} userMenu={<MyUserMenu />} />
+        </ProfileProvider>
+  )
+}

@@ -175,7 +175,14 @@ const Warehouse = () => {
           </div>
         </CardContent>
         <Divider light />
-        <div className="bottom-line"></div>
+        <CardContent>
+          <div className="bottom-line">
+          <Grid container>
+                <Grid item xs={12} md={12} lg={12}>
+                </Grid>
+          </Grid>
+          </div>
+        </CardContent>
       </Card>
     </div>
   )

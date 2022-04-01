@@ -6,7 +6,7 @@ import authProvider from './Auth/authProvider';
 import dataProvider from './Api/dataProvider';
 import dashboard from './Components/dashboard.js';
 import { customLogin } from './Shared/Login/customLogin';
-import { LayoutCustom } from './Shared/layout';
+import { CustomLayout } from './Shared/customlayout';
 import { ProductList, ProductEdit, ProductCreate, ProductShow } from './Components/products';
 import { CategoryList, CategoryEdit, CategoryCreate, CategoryShow } from './Components/categories';
 import { BrandList, BrandEdit, BrandCreate, BrandShow } from './Components/brands';
@@ -32,16 +32,16 @@ const App = () => (
       loginPage={customLogin}
       authProvider={authProvider}
       catchAll={NotFound}
-      layout={LayoutCustom}
+      layout={CustomLayout}
       customRoutes={[
         <Route
-          key="my-profile"
-          path="/my-profile"
+          key="profile"
+          path="/profile"
           component={ProfileEdit}
         />,
         <Route
-          key="app-settings"
-          path="/app-settings"
+          key="settings"
+          path="/settings"
           component={UserSettings}
         />
       ]}

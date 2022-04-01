@@ -6,6 +6,19 @@ const CustomEnglishMessage = {
         rrhh: 'Human Resources',
         warehouse: 'Warehouse'
     },
+    languages: {
+        Espanol: 'Spanish',
+        Deutch: 'Deutch',
+        English: 'English',
+        Frances: 'French'
+    },
+    colors: {
+        Red: 'Red',
+        Green: 'Green',
+        Blue: 'Blue',
+        Orange: 'Orange',
+        Cyan: 'Cyan'
+    },
     Categories: 'Categories',
     Brands: 'Brands',
     resources: {
@@ -13,7 +26,10 @@ const CustomEnglishMessage = {
             name: 'Profile'
         },
         config: {
-            name: 'Configuration'
+            name: 'Configuration',
+            language: 'Language',
+            darkTheme: 'Dark Theme',
+            color: 'Color'
         },
         products: {
             name: 'Product |||| Products'
@@ -26,6 +42,12 @@ const CustomEnglishMessage = {
                     id: 'Family',
                     name: 'Family'
                 }
+            },
+            names: {
+                Mouses: 'Mouses',
+                Motherboards: 'Motherboards',
+                Headsets: 'Headsets',
+                "Graphics Cards": 'Graphics Cards'
             }
         },
         brands: {
