@@ -6,7 +6,7 @@ import authProvider from './Auth/authProvider';
 import dataProvider from './Api/dataProvider';
 import dashboard from './Components/dashboard.js';
 import { customLogin } from './Shared/Login/customLogin';
-import { CustomLayout } from './Shared/customlayout';
+import { CustomLayout } from './Shared/layout';
 import { ProductList, ProductEdit, ProductCreate, ProductShow } from './Components/products';
 import { CategoryList, CategoryEdit, CategoryCreate, CategoryShow } from './Components/categories';
 import { BrandList, BrandEdit, BrandCreate, BrandShow } from './Components/brands';

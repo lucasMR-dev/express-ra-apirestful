@@ -11,7 +11,6 @@ export const ProfileProvider = ({ children }) => {
       refreshProfile: () => {
           setProfileVersion((currentVersion) => currentVersion + 1)
       }
-      
     }),
     [profileVersion]
   );

@@ -2,12 +2,12 @@ import React from "react";
 import { UserMenu, MenuItemLink, useGetIdentity, Loading, useTranslate, AppBar } from "react-admin";
 import ProfileIcon from "@material-ui/icons/People";
 import SettingsIcon from "@material-ui/icons/Settings";
-import { ProfileProvider, useProfile } from "../../Components/profile/profile";
+import { useProfile } from "../../Components/profile/profile";
 
 const MyUserMenu = (props) => {
   const translate = useTranslate();
+  const { loading } = useGetIdentity(); 
   const { profileVersion } = useProfile();
-  const { loading } = useGetIdentity();
   return loading ? (
     <Loading />
   ) : (
@@ -28,8 +28,6 @@ const MyUserMenu = (props) => {
 
 export const MyAppBar = (props) => {
   return (
-        <ProfileProvider>
-          <AppBar {...props} userMenu={<MyUserMenu />} />
-        </ProfileProvider>
+    <AppBar {...props} userMenu={<MyUserMenu />} />
   )
 }

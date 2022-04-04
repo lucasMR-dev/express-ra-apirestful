@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGetIdentity } from 'react-admin';
 
-const Footer = (props) => {
+const Footer = () => {
     const date = new Date();    
     const { loaded, identity } = useGetIdentity();
     let color;

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useEffect } from 'react';
 import { Layout, Loading, useGetIdentity, defaultTheme, useSetLocale } from 'react-admin';
 import { CustomSidebar } from './Navbar/sidebar';
 import { MyAppBar } from './Navbar/menubar';
@@ -9,17 +8,13 @@ import blue from '@material-ui/core/colors/blue';
 import red from '@material-ui/core/colors/red';
 import orange from '@material-ui/core/colors/orange';
 import cyan from '@material-ui/core/colors/cyan';
+import { ProfileProvider } from '../Components/profile/profile';
+import Footer from './footer';
 
-export const LayoutCustom = (props) => {
+export const MyLayout = (props) => {
     const setLocale = useSetLocale();
     const { loading, loaded, identity } = useGetIdentity();
-    let myTheme = merge({}, defaultTheme, {
-        palette: {
-            type: '',
-            contrastThreshold: 3,
-            tonalOffset: 0.2,
-        }
-    });
+    let myTheme = merge({}, defaultTheme, {});
     let theme;
     let color;
     let primaryColor;
@@ -63,33 +58,27 @@ export const LayoutCustom = (props) => {
             }
         }
     }
-
-    useEffect(() => {
+    React.useEffect(() => {
         const locale = localStorage.getItem('locale');
         setLocale(locale);
     }, [setLocale]);
 
-    
-
-    /* const [version, setVersion] = useState(0);
-
-    useEffect(() => {
-        const getCurrentVersion = () => {
-            const currentVersion = parseInt(localStorage.getItem('version'));
-            if (currentVersion > initialState) {
-                setVersion(currentVersion);
-            }
-        }
-        window.addEventListener('storage', getCurrentVersion);
-
-        return () => {
-            window.removeEventListener('storage', getCurrentVersion);
-        }
-    }, [initialState, version, setVersion]); */
-    
     return loaded ? (
+        <ProfileProvider>
             <Layout {...props} sidebar={CustomSidebar} appBar={MyAppBar} theme={myTheme} />
+        </ProfileProvider >
     ) : loading ? (
         <Loading />
     ) : null;
 };
+
+
+export const CustomLayout = (props) => {
+    const version = localStorage.getItem('version');
+    return (
+        <React.Fragment key={version}>
+            <MyLayout {...props} />
+            <Footer />
+        </React.Fragment>
+    )
+} 
