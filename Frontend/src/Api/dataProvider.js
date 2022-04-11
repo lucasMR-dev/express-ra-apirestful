@@ -250,6 +250,7 @@ const dataProvider = {
       formData.append("phone", params.data.phone);
       formData.append("picture", file.rawFile);
       formData.append("username", params.data.username);
+      formData.append("password", params.data.password);
       formData.append("email", params.data.email);
       formData.append("isActive", params.data.isActive);
       formData.append("job_name", params.data.job_name);
