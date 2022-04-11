@@ -102,16 +102,13 @@ router.get("/:id", async (req, res, next) => {
 // Post Employee (Closed Route)
 router.post("", upload.single('picture'), jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   const uploading = req.file;
-  let { job_name, hire_date, position, salary, department, firstname, lastname, birthday, phone, username, email, isActive } = req.body;
-  let password = Math.random().toString(36).substring(2, 15);
+  let { job_name, hire_date, position, salary, department, firstname, lastname, birthday, phone, username, email, password, isActive } = req.body;
   let user = new User({
     username,
     email,
     isActive,
     password
   });
-
-  const pw = password;
 
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(user.password, salt, async (err, hash) => {
@@ -151,8 +148,7 @@ router.post("", upload.single('picture'), jwt({ secret: config.JWT_SECRET }), as
                   query = { "$push": { "employees": employees } };
                 }
                 await Deparment.findByIdAndUpdate({ _id: success.department }, query, { new: true, runValidators: true });
-                const after = { email: user.email, password: pw };
-                res.status(201).send(after).end();
+                res.status(201).send(employee).end();
               }
               return next();
             });
