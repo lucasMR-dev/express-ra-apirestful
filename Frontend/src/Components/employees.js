@@ -26,9 +26,14 @@ import {
     SelectInput,
     NumberInput,
     usePermissions,
-    useRecordContext,
-    Button as RaButton
+    Button as RaButton,
+    Toolbar,
+    SaveButton,
+    DeleteButton,
+    useTranslate,
+    PasswordInput
 } from "react-admin";
+import { useForm } from 'react-final-form';
 import {
     useMediaQuery,
     Avatar,
@@ -64,11 +69,29 @@ const employee_position_choices = [
 ];
 
 export const CredentialsButton = (props) => {
-    const record = useRecordContext();
+    const translate = useTranslate();
+    const [disable, setDisable] = React.useState(false);
+    const form = useForm();
     const handleClick = () => {
-        alert(record.firstname);
+        let firstname = form.getFieldState('firstname');
+        let lastname = form.getFieldState('lastname');
+        let password = Math.random().toString(36).substring(2, 15);
+        let randomF = Math.floor(Math.random() * 5) + 2;
+        let randomL = Math.floor(Math.random() * 7) + 3;
+        if(firstname.value !== undefined && lastname.value !== undefined ){
+            let username = firstname.value.substr(0,randomF).toLowerCase()+"."+lastname.value.substr(0,randomL).toLowerCase();
+            form.change("username",username);
+            form.change("email", username+"@localhost.com");
+            form.change("password", password);
+            setDisable(true);
+        }
+        else {
+            alert(translate("resources.employees.Fill Profile Tab first"));
+        }
     }
-    return <RaButton label="Generate" color="primary" onClick={handleClick} {...props} />;
+    return (
+        <RaButton label="Generate" color="primary" onClick={handleClick} {...props} disabled={disable} />
+    )
 }
 
 export const LinkToRelatedDepartment = ({ record }) => {
@@ -192,14 +215,26 @@ export const EmployeeShow = (props) => {
     )
 };
 
+const CustomToolbar = (props) => {
+    const { loaded, permissions } = usePermissions();
+    return loaded ? (
+        <>
+            <Toolbar {...props}>
+                <SaveButton />
+                {permissions.includes('manager') ? <DeleteButton style={{ marginLeft: "auto" }} /> : null}
+            </Toolbar>
+        </>
+    ) : null;
+};
+
 export const EmployeeEdit = (props) => (
     <Edit {...props}>
-        <TabbedForm>
+        <TabbedForm toolbar={<CustomToolbar />}>
             <FormTab label="Profile">
-                <TextInput source="profile.firstname" />
+                <TextInput source="profile.firstname" record={props.record} />
                 <TextInput source="profile.lastname" />
                 <DateInput source="profile.birthday" />
-                <TextInput source="profile.phone"  />
+                <TextInput source="profile.phone" />
                 <ImageField source="profile.path" alt="picture" />
             </FormTab>
             <FormTab label="Company">
@@ -224,37 +259,41 @@ export const EmployeeEdit = (props) => (
     </Edit>
 );
 
-export const EmployeeCreate = (props) => (
-    <Create {...props}>
-        <TabbedForm>
-            <FormTab label="Profile">
-                <TextInput source="firstname" />
-                <TextInput source="lastname" />
-                <DateInput source="birthday" />
-                <TextInput source="phone" />
-                <ImageInput source="picture" label="Profile Picture" accept="image/*" required>
-                    <ImageField source="src" title="title" />
-                </ImageInput>
-            </FormTab>
-            <FormTab label="Company">
-                <SelectInput choices={employee_position_choices} source="position" required />
-                <TextInput source="job_name" />
-                <DateInput source="hire_date" />
-                <ReferenceInput
-                    source="department"
-                    reference="departments"
-                    link={false}
-                >
-                    <SelectInput optionText="name" optionValue="id" />
-                </ReferenceInput>
-                <NumberInput source="salary" />
-            </FormTab>
-            <FormTab label="Account">
-                <CredentialsButton />
-                <TextInput source="username" label="Username" />
-                <TextInput type="email" source="email" label="Email" />
-                <BooleanInput source="isActive" label="Is Active?" />
-            </FormTab>
-        </TabbedForm>
-    </Create>
-);
+export const EmployeeCreate = (props) => {
+    const translate = useTranslate();
+    return (
+        <Create {...props}>
+            <TabbedForm>
+                <FormTab label={translate("resources.employees.Profile")}>
+                    <TextInput source="firstname" />
+                    <TextInput source="lastname" />
+                    <DateInput source="birthday" />
+                    <TextInput source="phone" />
+                    <ImageInput source="picture" label="Profile Picture" accept="image/*" required>
+                        <ImageField source="src" title="title" />
+                    </ImageInput>
+                </FormTab>
+                <FormTab label={translate("resources.employees.Company")}>
+                    <SelectInput choices={employee_position_choices} source="position" required />
+                    <TextInput source="job_name" />
+                    <DateInput source="hire_date" />
+                    <ReferenceInput
+                        source="department"
+                        reference="departments"
+                        link="false"
+                    >
+                        <SelectInput optionText="name" optionValue="id" />
+                    </ReferenceInput>
+                    <NumberInput source="salary" />
+                </FormTab>
+                <FormTab label={translate("resources.employees.Account")}>
+                    <CredentialsButton />
+                    <TextInput source="username" />
+                    <TextInput type="email" source="email" />
+                    <PasswordInput source="password" disabled={true} />
+                    <BooleanInput source="isActive" />
+                </FormTab>
+            </TabbedForm>
+        </Create>
+    )
+};
