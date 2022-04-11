@@ -100,6 +100,10 @@ const CustomFrenchMessage = {
             }
         },
         employees: {
+            Profile: 'Profil',
+            Company: 'Société',
+            Account: 'Compte',
+            'Fill Profile Tab first': `Remplissez d'abord l'onglet Profil`,
             name: 'Employé |||| Employés',
             fields: {
                 position: 'Position',
@@ -117,7 +121,15 @@ const CustomFrenchMessage = {
                     username: `nom d'utilisateur`,
                     email: 'E-mail',
                     isActive: `C'est Actif?`
-                }
+                },
+                firstname: 'Prénom',
+                lastname: 'Nom de Famille',
+                phone: 'Téléphone',
+                path: 'Photo',
+                username: `nom d'utilisateur`,
+                email: 'E-mail',
+                password: 'Mot de passe',
+                isActive: `C'est Actif?`
             }
         }
     }

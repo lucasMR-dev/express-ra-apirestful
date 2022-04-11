@@ -76,8 +76,37 @@ const CustomEnglishMessage = {
             fields:{}
         },
         employees: {
+            Profile: 'Profil',
+            Company: 'Société',
+            Account: 'Compte',
+            'Fill Profile Tab first': `Fill Profile Tab first`,
             name: 'Employee |||| Employees',
-            fields: {}
+            fields: {
+                position: 'Position',
+                job_name: 'Job Name',
+                hire_date: `Hire Date`,
+                department: 'Department',
+                salary: 'Salary',
+                profile: {
+                    firstname: 'Firstname',
+                    lastname: 'Lastname',
+                    phone: 'Phone',
+                    path: 'Picture'
+                },
+                user: {
+                    username: `Username`,
+                    email: 'Email',
+                    isActive: `Is Active?`
+                },
+                firstname: 'Firstname',
+                lastname: 'lastname',
+                phone: 'Phone',
+                path: 'Picture',
+                username: `Username`,
+                email: 'Email',
+                password: 'Password',
+                isActive: `Is Active?`
+            }
         }
     }
 }
