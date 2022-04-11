@@ -1,12 +1,11 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { SimpleForm, useNotify, useGetIdentity, useDataProvider, SaveContextProvider, SelectInput, BooleanInput, TextInput, useSetLocale, useRedirect, useTranslate } from 'react-admin';
+import { SimpleForm, useNotify, useGetIdentity, useDataProvider, SaveContextProvider, SelectInput, BooleanInput, TextInput, useRedirect, useTranslate } from 'react-admin';
 
 export const UserSettings = ({ staticContext, ...props }) => {
     const dataProvider = useDataProvider();
     const translate = useTranslate();
     const notify = useNotify();
     const [saving, setSaving] = useState();
-    const setLocale = useSetLocale();
     const { identity } = useGetIdentity();
     const redirect = useRedirect();
 
@@ -37,8 +36,8 @@ export const UserSettings = ({ staticContext, ...props }) => {
                     notify("Your config has been updated", "info", {
                         _: "Your config has been updated"
                     });
-                    setLocale(data.data.profile.config.language);
-                    localStorage.setItem('version', appVersion+1)
+                    localStorage.setItem('locale', data.data.profile.config.language);
+                    localStorage.setItem('version', appVersion+1);
                     redirect('/');
                 },
                 onFailure: () => {
@@ -53,7 +52,7 @@ export const UserSettings = ({ staticContext, ...props }) => {
                 }
             }
         );
-    }, [dataProvider, notify, setLocale, appVersion, redirect]);
+    }, [dataProvider, notify, appVersion, redirect]);
 
     const saveContext = useMemo(() => ({
         save: handleSave,

@@ -58,6 +58,11 @@ const CustomEnglishMessage = {
                 active: 'Active',
                 logo: 'Brand Logo',
                 categories: 'Categories'
+            },
+            partnerStatus_choices: {
+                Aproved: 'Aproved',
+                Pending: 'Pending',
+                Refused: 'Refused'
             }
         },
         families: {

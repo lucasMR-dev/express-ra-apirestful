@@ -72,10 +72,15 @@ const CustomFrenchMessage = {
             fields: {
                 name: 'Nom',
                 partnerStatus: 'Statut de Partenaire',
-                active: 'Active',
+                active: 'Actif',
                 logo: 'Logo',
                 newlogo: 'Nouveau Logo?',
                 categories: 'Catégories'
+            },
+            partnerStatus_choices: {
+                Aproved: 'Approuvé',
+                Pending: 'En Attente',
+                Refused: 'Refusé'
             }
         },
         families: {
