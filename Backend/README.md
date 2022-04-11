@@ -1,5 +1,5 @@
 ## Features ##
-- APIRest Service
+- APIREST Service
 - Cors Integration
 - Upload Images
 - JWT Tokens
@@ -21,10 +21,10 @@
         "email": "my_email",
         "password": "my_password",
         "isActive": true, # Either your login request will be rejected
-        "access_type": "admin" # So we get all privilages at once let set it to admin
+        "access_type": 1 # So we get all privilages at once
     }
 ```
-- Now we will be able to Login into the Frontend
+- Now we will be able to make a Login request to  http://localhost:3000/v1/auth/login and recibe our `Token` and navigate through the API endpoints
 
 ### Unit Tests ###
 In Development mode you can run the Unit Tests:
