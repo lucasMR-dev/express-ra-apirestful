@@ -3,6 +3,7 @@ import frenchMessages from 'ra-language-french';
 const CustomFrenchMessage = {
     ...frenchMessages,
     titles: {
+        'Admin Panel': `Panneau d'administration`,
         rrhh: 'Ressources Humaines',
         warehouse: 'Dépot'
     },
@@ -18,6 +19,11 @@ const CustomFrenchMessage = {
         Blue: 'Bleu',
         Orange: 'Orange',
         Cyan: 'Cyan'
+    },
+    notifications: {
+        'Logged In': 'Session connectée',
+        'Session Expired': 'La session a expiré',
+        'Profile Updated': 'Profil mis à jour'
     },
     Categories: 'Catégories',
     Brands: 'Marques',

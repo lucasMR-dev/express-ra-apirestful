@@ -4,7 +4,8 @@ const CustomEnglishMessage = {
     ...englishMessages,
     titles: {
         rrhh: 'Human Resources',
-        warehouse: 'Warehouse'
+        warehouse: 'Warehouse',
+        'Admin Panel': 'Admin Panel'
     },
     languages: {
         Espanol: 'Spanish',
@@ -18,6 +19,11 @@ const CustomEnglishMessage = {
         Blue: 'Blue',
         Orange: 'Orange',
         Cyan: 'Cyan'
+    },
+    notifications: {
+        'Logged In': 'Logged In',
+        'Session Expired': 'Session Expired',
+        'Profile Updated': 'Profile Updated'
     },
     Categories: 'Categories',
     Brands: 'Brands',
