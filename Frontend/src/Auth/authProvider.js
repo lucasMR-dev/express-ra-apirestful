@@ -82,6 +82,8 @@ const authProvider = {
     localStorage.removeItem("permissions");
     localStorage.removeItem("locale");
     localStorage.removeItem("version");
+    sessionStorage.removeItem("events");
+    sessionStorage.removeItem("notifications");
     return Promise.resolve();
   },
   getIdentity: async () => {
