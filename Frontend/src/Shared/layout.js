@@ -1,93 +1,84 @@
 import * as React from 'react';
-import { Layout, Loading } from 'react-admin';
-import { Links } from './Navbar/sidebar';
-import { MyUserMenu } from './Navbar/menubar';
-import { AppBar } from 'react-admin';
-import { useGetIdentity } from 'react-admin';
-import { defaultTheme } from 'react-admin';
+import { Layout, Loading, useGetIdentity, defaultTheme, useSetLocale } from 'react-admin';
+import { CustomSidebar } from './Navbar/sidebar';
+import { MyAppBar } from './Navbar/menubar';
 import merge from 'lodash/merge';
+import green from '@material-ui/core/colors/green';
+import blue from '@material-ui/core/colors/blue';
+import red from '@material-ui/core/colors/red';
+import orange from '@material-ui/core/colors/orange';
+import cyan from '@material-ui/core/colors/cyan';
+import { ProfileProvider } from '../Components/profile/profile';
+import Footer from './footer';
 
-const MyAppBar = (props) => {
-    return (
-        <AppBar {...props} userMenu={<MyUserMenu />} />
-    )
-}
-
-export const LayoutCustom = (props) => {
-    let myTheme = merge({}, defaultTheme, {
-        palette: {
-            type: '',
-            contrastThreshold: 3,
-            tonalOffset: 0.2,
-        }
-    });
-    const date = new Date();
+export const MyLayout = (props) => {
+    const setLocale = useSetLocale();
     const { loading, loaded, identity } = useGetIdentity();
+    let myTheme = merge({}, defaultTheme, {});
     let theme;
     let color;
+    let primaryColor;
 
     if (identity) {
         identity.config.darkTheme ? theme = 'dark' : theme = 'light';
-        identity.config.color === 'red' ?
-            myTheme = {
-                palette: {
-                    type: theme
-                },
-                overrides: {
-                    MuiAppBar: {
-                        colorSecondary: {
-                            backgroundColor: 'red'
-                        }
+        switch (identity.config.color) {
+            case 'red':
+                color = '#f44336';
+                primaryColor = red;
+                break;
+            case 'green':
+                color = '#4caf50';
+                primaryColor = green;
+                break;
+            case 'orange':
+                color = '#ff9800';
+                primaryColor = orange;
+                break;
+            case 'cyan':
+                color = '#00bcd4';
+                primaryColor = cyan;
+                break;
+            default:
+                color = '#2196f3';
+                primaryColor = blue;
+                break;
+        }
+
+        myTheme = {
+            palette: {
+                type: theme,
+                primary: primaryColor
+            },
+            overrides: {
+                MuiAppBar: {
+                    colorSecondary: {
+                        backgroundColor: color
                     }
                 }
-            } : identity.config.color === 'green' ?
-            myTheme = {
-                palette: {
-                    type: theme
-                },
-                overrides: {
-                    MuiAppBar: {
-                        colorSecondary: {
-                            backgroundColor: 'green'
-                        }
-                    }
-                }
-            } :
-            myTheme = {
-                palette: {
-                    type: theme
-                },
-                overrides: {
-                    MuiAppBar: {
-                        colorSecondary: {
-                            backgroundColor: 'blue'
-                        }
-                    }
-                }
-            };
-        identity.config.color === 'red' ? color = 'red' : identity.config.color === 'green' ? color = 'green' : color = 'blue';
+            }
+        }
     }
+    React.useEffect(() => {
+        const locale = localStorage.getItem('locale');
+        setLocale(locale);
+    }, [setLocale]);
 
     return loaded ? (
-        <>
-            <Layout {...props} sidebar={Links} appBar={MyAppBar} theme={myTheme} />
-            <div
-                style={{
-                    position: "fixed",
-                    right: 0,
-                    bottom: 0,
-                    left: 0,
-                    zIndex: 100,
-                    padding: 6,
-                    backgroundColor: color,
-                    textAlign: "center",
-                    color: "white",
-                }}
-            >
-                <strong> Company Name &copy; {date.getFullYear()} </strong>
-            </div>
-        </>
+        <ProfileProvider>
+            <Layout {...props} sidebar={CustomSidebar} appBar={MyAppBar} theme={myTheme} />
+        </ProfileProvider >
     ) : loading ? (
         <Loading />
-    ) : null
+    ) : null;
 };
+
+
+export const CustomLayout = (props) => {
+    const version = localStorage.getItem('version');
+    return (
+        <React.Fragment key={version}>
+            <MyLayout {...props} />
+            <Footer />
+        </React.Fragment>
+    )
+} 

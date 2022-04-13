@@ -250,6 +250,7 @@ const dataProvider = {
       formData.append("phone", params.data.phone);
       formData.append("picture", file.rawFile);
       formData.append("username", params.data.username);
+      formData.append("password", params.data.password);
       formData.append("email", params.data.email);
       formData.append("isActive", params.data.isActive);
       formData.append("job_name", params.data.job_name);
@@ -320,7 +321,8 @@ const dataProvider = {
     });
     return { data: update };
   },
-  updateTheme: async (params) => {
+  updateSettings: async (params) => {
+    localStorage.removeItem('locale');
     const { json } = await httpClient(`${apiUrl}/employees/config/${params.data.id}`, {
       method: "PATCH",
       body: JSON.stringify({ profile: { config: { ...params.data.config } } }),

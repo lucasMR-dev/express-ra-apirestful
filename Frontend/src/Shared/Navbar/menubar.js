@@ -1,24 +1,41 @@
 import React from "react";
-import { UserMenu, MenuItemLink, useGetIdentity, Loading } from "react-admin";
+import { UserMenu, MenuItemLink, useGetIdentity, Loading, useTranslate, AppBar } from "react-admin";
 import ProfileIcon from "@material-ui/icons/People";
 import SettingsIcon from "@material-ui/icons/Settings";
+import { useProfile } from "../../Components/profile/profile";
+import { EventsButton } from "./events";
+import { NoticiationsButton } from "./notifications";
 
-export const MyUserMenu = (props) => {
+
+const MyUserMenu = (props) => {
+  const translate = useTranslate();
   const { loading } = useGetIdentity();
+  const { profileVersion } = useProfile();
+
   return loading ? (
     <Loading />
   ) : (
-    <UserMenu  {...props}>
-      <MenuItemLink
-        to="/my-profile"
-        primaryText="Profile"
-        leftIcon={<ProfileIcon />}
-      />
-      <MenuItemLink
-        to="/app-settings"
-        primaryText="Config"
-        leftIcon={<SettingsIcon />}
-      />
-    </UserMenu>
+    <>
+      <EventsButton {...props} />
+      <NoticiationsButton {...props} />
+      <UserMenu key={profileVersion} {...props}>
+        <MenuItemLink
+          to="/profile"
+          primaryText={translate('resources.profile.name')}
+          leftIcon={<ProfileIcon />}
+        />
+        <MenuItemLink
+          to="/settings"
+          primaryText={translate('resources.config.name')}
+          leftIcon={<SettingsIcon />}
+        />
+      </UserMenu>
+    </>
   )
 };
+
+export const MyAppBar = (props) => {
+  return (
+    <AppBar {...props} userMenu={<MyUserMenu />} />
+  )
+}

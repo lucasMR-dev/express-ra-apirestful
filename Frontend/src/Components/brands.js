@@ -43,11 +43,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { stringify } from "query-string";
 import ProductIcon from "@material-ui/icons/Collections";
 
-const partnerStatus_choices = [
-  { id: "Aproved", name: "Aproved" },
-  { id: "Pending", name: "Pending" },
-  { id: "Refused", name: "Refused" },
-];
 
 const useStyles = makeStyles({
   root: {
@@ -87,7 +82,7 @@ export const LinkToRelatedProducts = ({ record }) => {
       className={classes.link}
     >
       <ProductIcon className={classes.icon} />
-      {translate("Products")}
+      {translate("resources.products.name", { smart_count: 2 })}
     </Button>
   ) : null;
 };
@@ -120,8 +115,8 @@ export const BrandGrid = ({ ...props }) => {
 const BrandFilter = (props) => (
   <Filter {...props}>
     <SearchInput source="q" alwaysOn />
-    <TextInput label="Name" source="name" defaultValue="" />
-    <TextInput label="Categories" source="categories" defaultValue="" />
+    <TextInput source="name" defaultValue="" />
+    <TextInput source="categories" defaultValue="" />
   </Filter>
 );
 
@@ -159,7 +154,7 @@ const CustomToolbar = (props) => {
     <>
       <Toolbar {...props}>
         <SaveButton />
-        {permissions.includes('manager') ? <DeleteButton style={{marginLeft: "auto"}} /> : null}
+        {permissions.includes('manager') ? <DeleteButton style={{ marginLeft: "auto" }} /> : null}
       </Toolbar>
     </>
   ) : null;
@@ -167,6 +162,15 @@ const CustomToolbar = (props) => {
 
 
 export const BrandEdit = (props) => {
+
+  const translate = useTranslate();
+
+  const partnerStatus_choices = [
+    { id: "Aproved", name: translate("resources.brands.partnerStatus_choices.Aproved") },
+    { id: "Pending", name: translate("resources.brands.partnerStatus_choices.Pending") },
+    { id: "Refused", name: translate("resources.brands.partnerStatus_choices.Refused") },
+  ];
+
   const payload = {
     filter: {},
     pagination: { page: 1, perPage: 10 },
@@ -190,7 +194,7 @@ export const BrandEdit = (props) => {
         <SelectInput source="partnerStatus" choices={partnerStatus_choices} />
         <BooleanInput source="active" />
         <ImageField source="logo" title="title" />
-        <ImageInput source="newlogo" label="New Logo?" accept="image/*">
+        <ImageInput source="newlogo" accept="image/*">
           <ImageField source="src" title="title" />
         </ImageInput>
         <CheckboxGroupInput
@@ -203,26 +207,36 @@ export const BrandEdit = (props) => {
   );
 };
 
-export const BrandCreate = (props) => (
-  <Create {...props}>
-    <SimpleForm>
-      <TextInput source="name" required />
-      <SelectInput
-        source="partnerStatus"
-        choices={partnerStatus_choices}
-        defaultValue={partnerStatus_choices[0].name}
-      />
-      <BooleanInput source="active" defaultValue={false} />
-      <ReferenceArrayInput
-        label="Categories"
-        source="categories"
-        reference="categories"
-      >
-        <CheckboxGroupInput optionText="name" optionValue="id" />
-      </ReferenceArrayInput>
-      <ImageInput source="logo" label="Brand Logo" accept="image/*" required>
-        <ImageField source="src" title="title" />
-      </ImageInput>
-    </SimpleForm>
-  </Create>
-);
+export const BrandCreate = (props) => {
+
+  const translate = useTranslate();
+
+  const partnerStatus_choices = [
+    { id: "Aproved", name: translate("resources.brands.partnerStatus_choices.Aproved") },
+    { id: "Pending", name: translate("resources.brands.partnerStatus_choices.Pending") },
+    { id: "Refused", name: translate("resources.brands.partnerStatus_choices.Refused") },
+  ];
+
+  return (
+    <Create {...props}>
+      <SimpleForm>
+        <TextInput source="name" required />
+        <SelectInput
+          source="partnerStatus"
+          choices={partnerStatus_choices}
+          defaultValue={partnerStatus_choices[0].name}
+        />
+        <BooleanInput source="active" defaultValue={false} />
+        <ReferenceArrayInput
+          source="categories"
+          reference="categories"
+        >
+          <CheckboxGroupInput optionText="name" optionValue="id" />
+        </ReferenceArrayInput>
+        <ImageInput source="logo" accept="image/*" required>
+          <ImageField source="src" title="title" />
+        </ImageInput>
+      </SimpleForm>
+    </Create>
+  )
+};

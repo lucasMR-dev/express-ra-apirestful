@@ -87,25 +87,32 @@ router.post('/refresh', async (req, res, next) => {
     const { tokenWeb, user } = req.body;
     try {
         const userObj = await User.findOne({ _id: user });
-        const oldToken = jwt.verify(tokenWeb, config.JWT_SECRET, (err, result) => {
-            if (err) {
-                res.status(404).send("Token Expired").end();
+        function addHours(date, hours) {
+            const newDate = new Date(date);
+            newDate.setHours(newDate.getHours() + hours);
+            return newDate;
+        }
+        const oldToken = jwt.verify(tokenWeb, config.JWT_SECRET, (err) => {
+            const expiration = new Date(err.expiredAt);
+            let expTime = addHours(expiration, 1);
+            const now = new Date();
+            if (err.name !== 'TokenExpiredError') {
+                res.status(400).send('Not Allowed').end();
+            }
+            else if (now > expTime) {
+                res.status(404).send('Token Expired').end();
             }
             else {
-                return result
+                const token = jwt.sign(userObj.toJSON(), config.JWT_SECRET, {
+                    expiresIn: '1h',
+                    subject: userObj.id
+                });
+                const { iat, exp, sub } = jwt.decode(token);
+                // API RESPONSE JWT
+                res.status(200).send({ iat, exp, sub, token }).end();
             }
         });
-        delete oldToken.exp;
-        delete oldToken.iat;
-        delete oldToken.sub;
-
-        const token = jwt.sign(userObj.toJSON(), config.JWT_SECRET, {
-            expiresIn: '30m',
-            subject: userObj.id
-        });
-        const { iat, exp, sub } = jwt.decode(token);
-        // API RESPONSE JWT
-        res.send({ iat, exp, sub, token }).end();
+        delete oldToken;
         next();
     }
     catch (err) {
