@@ -5,14 +5,12 @@ const range = require("express-range");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const usersRouter = require("./Routes/users");
-const profileRouter = require("./Routes/profiles");
 const AuthRouter = require("./Routes/auth");
 const productRouter = require("./Routes/products");
 const categoriesRouter = require("./Routes/categories");
 const brandsRouter = require("./Routes/brands");
 const familiesRouter = require("./Routes/families");
 const metricsRouter = require("./Routes/metrics");
-const clientsRouter = require("./Routes/clients");
 const employeesRouter = require("./Routes/employees");
 const departmentsRouter = require("./Routes/departments");
 const path = require("path");
@@ -47,13 +45,11 @@ server.use(version + "/Public/brands", express.static("Public/brands"));
 // Routers
 server.use(version + "/users", usersRouter);
 server.use(version + "/auth", AuthRouter);
-server.use(version + "/profile", profileRouter);
 server.use(version + "/products", productRouter);
 server.use(version + "/categories", categoriesRouter);
 server.use(version + "/brands", brandsRouter);
 server.use(version + "/families", familiesRouter);
 server.use(version + "/metrics", metricsRouter);
-server.use(version + "/clients", clientsRouter);
 server.use(version + "/employees", employeesRouter);
 server.use(version + "/departments", departmentsRouter);
 
