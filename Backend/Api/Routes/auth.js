@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../Models/User');
 const config = require('../config');
-const Profile = require('../Models/Profile');
 
 // Router Export
 const router = express.Router()
@@ -58,7 +57,7 @@ router.post('/login', async (req, res, next) => {
                         });
                         const { iat, exp, sub } = jwt.decode(token);
                         // API RESPONSE JWT
-                        res.status(202)..send({ iat, exp, sub, token }).end();
+                        res.status(202).send({ iat, exp, sub, token }).end();
                         next();
                     }
                     else {
