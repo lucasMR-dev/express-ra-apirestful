@@ -89,6 +89,7 @@ const authProvider = {
   getIdentity: async () => {
     const profile = localStorage.getItem("userLogged");
     const version = localStorage.getItem("version");
+    const token = localStorage.getItem("token");
     if (profile !== null) {
       try {
         const query = {
@@ -99,6 +100,7 @@ const authProvider = {
         const url = `${apiUrl}/employees/?${stringify(query)}`;
         const request = new Request(url, {
           method: "GET",
+          headers: new Headers({ "Authorization": `Bearer ${token}` })
         });
         const response = await fetch(request);
         const res = await response.json();
@@ -123,10 +125,12 @@ const authProvider = {
   },
   getPermissions: async () => {
     const user = localStorage.getItem("userLogged");
+    const token = localStorage.getItem("token");
     if (user !== null) {
       try {
         const request = new Request(`${apiUrl}/users/${user}`, {
           method: "GET",
+          headers: new Headers({ "Authorization": `Bearer ${token}` })
         });
         const response = await fetch(request);
         const res = await response.json();
@@ -139,6 +143,7 @@ const authProvider = {
           const url = `${apiUrl}/employees/${user}`;
           const request = new Request(url, {
             method: "GET",
+            headers: new Headers({ "Authorization": `Bearer ${token}` })
           });
           const response = await fetch(request);
           const res = await response.json();          
@@ -147,6 +152,7 @@ const authProvider = {
           const departments = `${apiUrl}/departments/${department}`;
           const requestD = new Request(departments, {
             method: "GET",
+            headers: new Headers({ "Authorization": `Bearer ${token}` })
           });
           const responseD = await fetch(requestD);
           const resD = await responseD.json();

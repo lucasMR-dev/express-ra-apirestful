@@ -61,7 +61,6 @@ const ProductFilter = (props) => (
 );
 
 export const ProductList = ({ ...props }) => {
-  const imageFieldClasses = customStyles();
   const { loaded, permissions } = usePermissions();
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   return loaded ? (
@@ -76,28 +75,29 @@ export const ProductList = ({ ...props }) => {
           linkType={permissions === "admin" ? "edit" : "show"}
         />
       ) : (
-        <Box display="flex">
-          <Aside />
-          <Datagrid expand={ProductShow} style={{ width: "auto" }}>
-            <TextField source="name" />
-            <RichTextField source="shortDetails" />
-            <TextField source="stock" />
-            <BooleanField source="sale" />
-            <NumberField
-              source="discount"
-              format={(v) => v / 100}
-              options={{ style: "percent" }}
-            />
-            <NumberField
-              source="salePrice"
-              options={{ style: "currency", currency: "CPL" }}
-            />
-            <ChipField source="colorAvailable" />
-            <ImageField classes={imageFieldClasses} source="pictures[0].small" label="Pictures" />
-            <EditButton />
-            {permissions.includes("manager") || permissions.includes("supervisor") ? <DeleteButton /> : null}
-          </Datagrid>
-        </Box>
+        <React.Fragment>
+          <Box display="flex">
+            <Aside />
+            <Datagrid expand={ProductShow} style={{ width: "auto" }}>
+              <TextField source="name" />
+              <RichTextField source="shortDetails" />
+              <TextField source="stock" />
+              <BooleanField source="sale" />
+              <NumberField
+                source="discount"
+                options={{ style: "percent" }}
+              />
+              <NumberField
+                source="salePrice"
+                options={{ style: "currency", currency: "CPL" }}
+              />
+              <ChipField source="colorAvailable" />
+              <ImageField source="pictures[0].small" label="Pictures" />
+              <EditButton />
+              {permissions.includes("manager") || permissions.includes("supervisor") ? <DeleteButton /> : null}
+            </Datagrid>
+          </Box>
+        </React.Fragment>
       )}
     </List>
   ) : null;
@@ -175,7 +175,7 @@ export const ProductEdit = ({ ...props }) => {
           <ReferenceInput
             source="brand"
             reference="brands"
-            link={false}
+            link="false"
           >
             <SelectInput optionText="name" optionValue="id" />
           </ReferenceInput>
@@ -219,7 +219,7 @@ export const ProductEdit = ({ ...props }) => {
             <ReferenceInput
               source="brand"
               reference="brands"
-              link={false}
+              link="false"
             >
               <SelectInput optionText="name" optionValue="id" />
             </ReferenceInput>
@@ -229,7 +229,7 @@ export const ProductEdit = ({ ...props }) => {
               optionValue="id"
             />
           </FormTab>
-          <FormTab label="Inventory" path="/inventory">
+          <FormTab label="Inventory">
             <BooleanInput source="newPro" />
             <BooleanInput source="sale" />
             <NumberInput source="price" />
@@ -237,7 +237,7 @@ export const ProductEdit = ({ ...props }) => {
             <NumberInput source="discount" />
             <NumberInput source="stock" />
           </FormTab>
-          <FormTab label="Text" path="/product_info">
+          <FormTab label="Text">
             <RichTextInput source="shortDetails" />
             <RichTextInput source="description" />
           </FormTab>
@@ -255,7 +255,7 @@ export const ProductEdit = ({ ...props }) => {
               <ImageField source="src" title="title" />
             </ImageInput>
           </FormTab>
-          <FormTab label="Others" path="/misc">
+          <FormTab label="Others">
             <ArrayInput source="tags">
               <SimpleFormIterator>
                 <TextInput />
