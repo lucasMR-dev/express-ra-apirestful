@@ -8,10 +8,6 @@ const queryFilters = require("../Functions/Filters/queryFilters");
 // Router Export
 const router = express.Router();
 
-/**
- * USER ROUTES
- */
-
 // List Users
 router.get("", async (req, res, next) => {
   try {
@@ -55,8 +51,7 @@ router.get("/:id", async (req, res, next) => {
       access_type: user.access_type,
       id: user._id,
     };
-    res.send(data);
-    res.end();
+    res.send(data).end();
     next();
   } catch (err) {
     return next(err.message);
@@ -81,8 +76,7 @@ router.post("", async (req, res, next) => {
       //Save user
       try {
         const newUser = await user.save();
-        res.send(newUser);
-        res.end();
+        res.send(newUser).end();
         next();
       } catch (err) {
         return next(err.message);
@@ -106,8 +100,7 @@ router.patch("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) 
       access_type: user.access_type,
       id: user._id,
     };
-    res.send(data);
-    res.end();
+    res.send(data).end();
     next();
   } catch (error) {
     return next(error.message);
