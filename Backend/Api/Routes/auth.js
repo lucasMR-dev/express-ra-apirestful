@@ -58,9 +58,7 @@ router.post('/login', async (req, res, next) => {
                         });
                         const { iat, exp, sub } = jwt.decode(token);
                         // API RESPONSE JWT
-                        res.status(202);
-                        res.send({ iat, exp, sub, token });
-                        res.end();
+                        res.status(202)..send({ iat, exp, sub, token }).end();
                         next();
                     }
                     else {

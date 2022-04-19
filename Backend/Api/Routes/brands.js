@@ -181,9 +181,8 @@ router.patch("/:id", upload.single("logo"), jwt({ secret: config.JWT_SECRET }), 
         data,
         { new: true, runValidators: true }
       );
-      res.status(200);
-      res.send(brand);
-      res.next();
+      res.status(200).send(brand).end();
+      next();
     } catch (error) {
       return next(error.message);
     }

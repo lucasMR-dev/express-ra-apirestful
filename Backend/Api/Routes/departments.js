@@ -7,12 +7,8 @@ const queryFilters = require("../Functions/Filters/queryFilters");
 // Router Export
 const router = express.Router();
 
-/**
- * USER ROUTES
- */
-
 // List Deparments
-router.get("", async (req, res, next) => {
+router.get("", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   try {
     // Query Params
     const { filter, sort, range } = req.query;
@@ -51,7 +47,7 @@ router.get("", async (req, res, next) => {
 });
 
 // Get Department by Id (Open Route)
-router.get("/:id", async (req, res, next) => {
+router.get("/:id",jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   try {
     const deparment = await Department.findOne({ _id: req.params.id });
     res.send(deparment).end();

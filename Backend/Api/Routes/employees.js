@@ -47,7 +47,7 @@ const upload = multer({
 const router = express.Router();
 
 // Get Employees (Open Route)
-router.get("", async (req, res, next) => {
+router.get("", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   try {
     // Query Params
     const { filter, sort, range } = req.query;
@@ -84,7 +84,7 @@ router.get("", async (req, res, next) => {
 });
 
 // Get Employee by Id (Open Route)
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", jwt({ secret: config.JWT_SECRET }), async (req, res, next) => {
   try {
     const employee = await Employee.findOne({ $or: [{ _id: req.params.id }, { user: req.params.id }] }).populate("user", '-password');
     if (employee) {
