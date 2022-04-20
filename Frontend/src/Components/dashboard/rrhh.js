@@ -80,7 +80,7 @@ export const MyCustomList = (props) => {
     { page: 1, perPage: 10 },
     currentSort
   );
-  const locale = localStorage.getItem('locale');
+  const locale = localStorage.getItem('locale') || 'en-EN';
 
   return (
     <Datagrid

@@ -49,7 +49,6 @@ export const NoticiationsButton = (props) => {
             let list = hide.ids;
             list.push({ status: 'readed', id: event.currentTarget.id });
             setHide({ ids: list });
-            sessionStorage.setItem('notifications', setCount(count - 1));
             sessionStorage.setItem('notificationsReaded', setHide({ ids: list }));
         }
     }
